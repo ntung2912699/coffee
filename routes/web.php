@@ -14,3 +14,10 @@ Route::get('/admin/product-index', [\App\Http\Controllers\Admin\ProductControlle
 Route::post('/admin/product-store', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('admin.product-store');
 Route::post('/admin/product-update/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('admin.product-update');
 Route::post('/admin/product-delete/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'delete'])->name('admin.product-delete');
+
+Route::get('admin/orders/index', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders-index');
+Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'storeOrder'])->name('orders.store');
+Route::get('/orders/print/{id}', [\App\Http\Controllers\HomeController::class, 'printOrder'])->name('orders.print');
+Route::get('/orders/printReceipt/{id}', [\App\Http\Controllers\HomeController::class, 'printReceipt'])->name('orders.printReceipt');
+Route::post('/orders/cancel/{id}', [\App\Http\Controllers\HomeController::class, 'cancelOrder'])->name('orders.cancel');
+
