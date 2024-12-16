@@ -43,7 +43,7 @@
             
             <!-- Giỏ hàng dưới dạng Popup -->
             <div id="cart-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cart-modal-label" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="cart-modal-label">Giỏ hàng</h5>
@@ -51,8 +51,18 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <ul id="cart-list" class="list-group">
+                        <div class="modal-bodcart-listy">
+                            <!-- Input Tên khách và Số điện thoại -->
+                            <div class="mb-3">
+                                <label for="customer-name" class="form-label">Tên khách</label>
+                                <input type="text" class="form-control customer-name" id="customer-name" placeholder="Nhập tên khách">
+                            </div>
+                            <div class="mb-3">
+                                <label for="customer-phone" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control customer-phone" id="customer-phone" placeholder="Nhập số điện thoại">
+                            </div>
+
+                            <ul id="" class="list-group">
                                 <!-- Các sản phẩm trong giỏ hàng sẽ được thêm vào đây -->
                             </ul>
                             <hr>
@@ -63,7 +73,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-primary" id="checkout-btn">Thanh toán</button>
+                            <button type="button" class="btn btn-primary checkout-btn" id="checkout-btn-modal">Thanh toán</button>
                         </div>
                     </div>
                 </div>
@@ -114,12 +124,23 @@
                 <div class="card shadow mb-4" style="min-height: 760px">
                     <div class="card-header py-3">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h4 class="m-0 font-weight-bold text-primary">ĐƠN HÀNG</h2>
+                            <h4 class="m-0 font-weight-bold text-primary">ĐƠN HÀNG</h4>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-outline-danger shadow-sm" id="clear-cart-btn">Xóa Giỏ Hàng</a>
                         </div>
                     </div>
                     <div class="card-body">
-                        <ul id="cart-list" class="list-group">
+                        <!-- Input Tên khách và Số điện thoại -->
+                        <div class="mb-3">
+                            <label for="customer-name" class="form-label">Tên khách</label>
+                            <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customer-phone" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <!-- Danh sách sản phẩm trong giỏ -->
+                        <ul id="cart-list-left" class="list-group">
                             <!-- Các sản phẩm trong giỏ hàng sẽ được thêm vào đây -->
                         </ul>
                         <hr>
@@ -127,10 +148,11 @@
                             <strong>Tổng tiền:</strong>
                             <span class="font-weight-bold" id="total-price">0 VNĐ</span>
                         </div>
-                        <button class="btn btn-primary mt-3" id="checkout-btn">Thanh toán</button>
+                        <button class="btn btn-primary mt-3 checkout-btn" id="checkout-btn">Thanh toán</button>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -168,11 +190,24 @@
         let totalItems = 0;
 
         $('#cart-list').empty();
+        $('#cart-list-left').empty();
         
         // Duyệt qua các sản phẩm trong giỏ
         cart.forEach(item => {
             const itemTotalPrice = item.price * item.quantity;
             $('#cart-list').append(`
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${item.name} 
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-outline-secondary change-quantity" data-product-id="${item.id}" data-action="decrease">-</button>
+                        <input type="number" class="form-control form-control-sm mx-2" value="${item.quantity}" data-product-id="${item.id}" style="width: 50px;">
+                        <button class="btn btn-sm btn-outline-secondary change-quantity" data-product-id="${item.id}" data-action="increase">+</button>
+                    </div>
+                    <span class="ml-2">${formatCurrency(itemTotalPrice)}</span>
+                    <i class="fas fa-trash-alt text-danger remove-from-cart" data-product-id="${item.id}"></i>
+                </li>
+            `);
+            $('#cart-list-left').append(`
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     ${item.name} 
                     <div class="d-flex align-items-center">
@@ -303,13 +338,23 @@
     updateCart();
 });
 
+$(document).on('click', '#clear-cart-btn', function() {
+    // Xóa giỏ hàng trong localStorage và bộ nhớ
+    localStorage.removeItem('cart');
+    cart = [];
+    updateCart();
+});
+
 // Thực hiện thanh toán
-$(document).on('click', '#checkout-btn', function() {
+$(document).on('click', '.checkout-btn', function() {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         if (cart.length === 0) {
             alert('Giỏ hàng trống!');
             return;
         }
+
+        const customerName = $('.customer-name').val();
+        const customerPhone = $('.customer-phone').val();
 
         // Gửi dữ liệu giỏ hàng đến backend
         $.ajax({
@@ -317,6 +362,8 @@ $(document).on('click', '#checkout-btn', function() {
             type: 'POST',
             data: {
                 _token: "{{ csrf_token() }}",
+                customerName: customerName
+                customerPhone: customerPhone
                 items: cart,
                 total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
             },
@@ -333,13 +380,6 @@ $(document).on('click', '#checkout-btn', function() {
                 alert('Đã xảy ra lỗi! Vui lòng thử lại.');
             }
         });
-    });
-
-    $(document).on('click', '#clear-cart-btn', function() {
-        // Xóa giỏ hàng trong localStorage và bộ nhớ
-        localStorage.removeItem('cart');
-        cart = [];
-        updateCart();
     });
 
     // Khôi phục giỏ hàng khi tải lại trang
