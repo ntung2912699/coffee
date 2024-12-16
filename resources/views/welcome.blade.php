@@ -47,7 +47,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="cart-modal-label">Giỏ hàng</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                             <button type="button" class="btn btn-primary" id="checkout-btn">Thanh toán</button>
                         </div>
                     </div>
@@ -240,7 +240,7 @@
     // Thêm sự kiện cho nút "Thêm vào giỏ hàng"
     $(document).on('click', '.add-to-cart', function() {
         const productId = $(this).data('product-id');
-        const productName = $(this).closest('li').find('.product-name').text();
+        const productName = $(this).closest('li').find('span').text();
         const productPrice = $(this).data('price');
 
         addToCart(productId, productName, productPrice);
@@ -299,15 +299,52 @@
         $('#cart-modal').modal('show');
     });
 
-    // Xóa giỏ hàng
-    $('#clear-cart-btn').on('click', function() {
+    // Cập nhật giỏ hàng khi trang được tải
+    updateCart();
+});
+
+// Thực hiện thanh toán
+$(document).on('click', '#checkout-btn', function() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart.length === 0) {
+            alert('Giỏ hàng trống!');
+            return;
+        }
+
+        // Gửi dữ liệu giỏ hàng đến backend
+        $.ajax({
+            url: "{{ route('orders.store') }}",
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                items: cart,
+                total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+            },
+            success: function(response) {
+                // Xóa giỏ hàng sau khi thanh toán
+                localStorage.removeItem('cart');
+                cart = [];
+                updateCart();
+
+                // Chuyển hướng đến trang in hóa đơn
+                window.location.href = `/orders/print/${response.order_id}`;
+            },
+            error: function(xhr) {
+                alert('Đã xảy ra lỗi! Vui lòng thử lại.');
+            }
+        });
+    });
+
+    $(document).on('click', '#clear-cart-btn', function() {
+        // Xóa giỏ hàng trong localStorage và bộ nhớ
         localStorage.removeItem('cart');
         cart = [];
         updateCart();
     });
 
-    // Cập nhật giỏ hàng khi trang được tải
-    updateCart();
-});
+    // Khôi phục giỏ hàng khi tải lại trang
+    $(document).ready(function() {
+        updateCart();
+    });
 
 </script>
