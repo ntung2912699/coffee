@@ -37,12 +37,15 @@
                         <td>{{ $order->created_at }}</td>
                         <td>{{ $order->updated_at }}</td>
                         <td>
-                            <form method="POST" action="{{ route('admin.product-delete', ['id' => $order->id]) }}" id="deleteForm_{{ $order->id }}">
+                            <form method="POST" action="{{ route('orders.delete', ['id' => $order->id]) }}" id="deleteForm_{{ $order->id }}">
                             @csrf
                             <div class="btn-group-lg">
                                 <a href="{{ route('orders.print', ['id' => $order->id]) }}" type="button" class="btn btn-outline-success">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $order->id }}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                             </form>
                         </td>

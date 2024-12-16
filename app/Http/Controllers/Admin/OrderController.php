@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Order\OrderRepository;
+use App\Repositories\Order\OrderItemRepository;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -12,16 +13,23 @@ class OrderController extends Controller
      * @var OrderRepository
      */
     protected $orderRepository;
+
+    /**
+     * @var OrderItemRepository
+     */
+    protected $orderItemRepository;
     /**
      * CategoryController constructor.
      * @param orderRepository $orderRepository
      */
     public function __construct
     (
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        OrderItemRepository $orderItemRepository
     )
     {
         $this->orderRepository =  $orderRepository;
+        $this->orderItemRepository =  $orderItemRepository;
     }
 
     /**
@@ -82,13 +90,14 @@ class OrderController extends Controller
     }
 
     /**
-     * Xóa category
+     * Xóa order
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete($id)
     {
         try {
+            $this->orderItemRepository->deleteByOrderId($id);
             $this->orderRepository->delete($id);
 
             return redirect()->route('admin.category-index')->with('success', 'Thành Công!');

@@ -20,4 +20,5 @@ Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'stor
 Route::get('/orders/print/{id}', [\App\Http\Controllers\HomeController::class, 'printOrder'])->name('orders.print');
 Route::get('/orders/printReceipt/{id}', [\App\Http\Controllers\HomeController::class, 'printReceipt'])->name('orders.printReceipt');
 Route::post('/orders/cancel/{id}', [\App\Http\Controllers\HomeController::class, 'cancelOrder'])->name('orders.cancel');
+Route::post('/orders/delete/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'delete'])->name('orders.delete');
 
