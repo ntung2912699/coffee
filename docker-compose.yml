@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"  # ánh xạ cổng 8080 từ container sang máy chủ
+    volumes:
+      - .:/var/www
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=dpg-ctc66s1u0jms73crasbg-a
+      - DB_PORT=5432
+      - DB_DATABASE=auto99db
+      - DB_USERNAME=auto99db_user
+      - DB_PASSWORD=xj5S0y46AcJoNP6iyTy8lKMecfJ7Ppwa
+    networks:
+      - app_network
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: auto99db
+      POSTGRES_USER: auto99db_user
+      POSTGRES_PASSWORD: xj5S0y46AcJoNP6iyTy8lKMecfJ7Ppwa
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
