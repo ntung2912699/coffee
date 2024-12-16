@@ -103,7 +103,7 @@ class HomeController extends Controller
             ]);
         }
 
-        // Mail::to('ntung2912699@gmail.com')->send(new OrderCreated($order));
+        Mail::to('ntung2912699@gmail.com')->send(new OrderCreated($order));
 
         return response()->json(['order_id' => $order->id]);
     }

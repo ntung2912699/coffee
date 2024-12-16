@@ -4,7 +4,7 @@
     <div class="dashboad" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Bảng Điều Khiển</h1>
-            <a href="{{ route('welcome') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Về Màn Hình Order</a>
+            <a href="{{ route('welcome') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Về Màn Hình Order</a>
         </div>
 
         <!-- Content Row -->
