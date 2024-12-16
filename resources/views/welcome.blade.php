@@ -49,8 +49,8 @@
                 <div class="card shadow mb-4" style="min-height: 760px">
                     <div class="card-header py-3">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h2 class="m-0 font-weight-bold text-primary">ĐƠN HÀNG</h2>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-outline-danger shadow-sm" id="clear-cart-btn">Xóa Tất Cả Giỏ Hàng</a>
+                            <h4 class="m-0 font-weight-bold text-primary">ĐƠN HÀNG</h2>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-outline-danger shadow-sm" id="clear-cart-btn">Xóa Giỏ Hàng</a>
                         </div>
                     </div>
                     <div class="card-body">
