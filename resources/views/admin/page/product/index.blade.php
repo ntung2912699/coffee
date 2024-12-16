@@ -64,62 +64,64 @@
             </div>
         </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">DANH MỤC</th>
-                <th scope="col">TÊN</th>
-                <th scope="col">GIÁ TIỀN</th>
-                <th scope="col">MÔ TẢ</th>
-                <th scope="col">NGÀY TẠO</th>
-                <th scope="col">NGÀY SỬA</th>
-                <th scope="col">CHỨC NĂNG</th>
-            </tr>
-            </thead>
-            <tbody>
-                @foreach($products as $product)
-                    <tr>
-                        <th scope="row">{{ $product->id }}</th>
-                        <td>{{ $product->name }}</td>
-                        <td>
-                            {{ $product->category->name }}
-                            @if(count($product->attributes) > 0)
-                                [
-                                @foreach($product->attributes as $index => $item)
-                                    {{ $item->name }}@if($index < count($product->attributes) - 1), @endif
-                                @endforeach
-                                ]
-                            @endif
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">DANH MỤC</th>
+                    <th scope="col">TÊN</th>
+                    <th scope="col">GIÁ TIỀN</th>
+                    <th scope="col">MÔ TẢ</th>
+                    <th scope="col">NGÀY TẠO</th>
+                    <th scope="col">NGÀY SỬA</th>
+                    <th scope="col">CHỨC NĂNG</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($products as $product)
+                        <tr>
+                            <th scope="row">{{ $product->id }}</th>
+                            <td>{{ $product->name }}</td>
+                            <td>
+                                {{ $product->category->name }}
+                                @if(count($product->attributes) > 0)
+                                    [
+                                    @foreach($product->attributes as $index => $item)
+                                        {{ $item->name }}@if($index < count($product->attributes) - 1), @endif
+                                    @endforeach
+                                    ]
+                                @endif
 
-                        </td>
-                        <td>{{ $product->price }}</td>
-                        <td>{{ $product->description }}</td>
-                        <td>{{ $product->created_at }}</td>
-                        <td>{{ $product->updated_at }}</td>
-                        <td>
-                            <form method="POST" action="{{ route('admin.product-delete', ['id' => $product->id]) }}" id="deleteForm_{{ $product->id }}">
-                            @csrf
-                            <div class="btn-group-lg">
-                                <button type="button" class="btn btn-outline-info edit-product-btn" data-bs-toggle="modal" data-bs-target="#productEditModal"
-                                        data-id="{{ $product->id }}"
-                                        data-name="{{ $product->name }}"
-                                        data-category-id="{{ $product->category_id }}"
-                                        data-price="{{ $product->price }}"
-                                        data-options="{{ json_encode($product->attributes) }}"
-                                        data-description="{{ $product->description }}">
-                                    <i class="text-info fas fa-pen-alt"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $product->id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                            </td>
+                            <td>{{ $product->price }}</td>
+                            <td>{{ $product->description }}</td>
+                            <td>{{ $product->created_at }}</td>
+                            <td>{{ $product->updated_at }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('admin.product-delete', ['id' => $product->id]) }}" id="deleteForm_{{ $product->id }}">
+                                @csrf
+                                <div class="btn-group-lg">
+                                    <button type="button" class="btn btn-outline-info edit-product-btn" data-bs-toggle="modal" data-bs-target="#productEditModal"
+                                            data-id="{{ $product->id }}"
+                                            data-name="{{ $product->name }}"
+                                            data-category-id="{{ $product->category_id }}"
+                                            data-price="{{ $product->price }}"
+                                            data-options="{{ json_encode($product->attributes) }}"
+                                            data-description="{{ $product->description }}">
+                                        <i class="text-info fas fa-pen-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $product->id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal Edit Product -->

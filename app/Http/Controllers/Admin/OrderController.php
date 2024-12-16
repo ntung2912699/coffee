@@ -60,9 +60,9 @@ class OrderController extends Controller
                 'name' => $request->get('name'),
             ]);
 
-            return redirect()->route('admin.category-index')->with('success', 'Thành Công!');
+            return redirect()->route('admin.orders-indexx')->with('success', 'Thành Công!');
         } catch (\Exception $exception) {
-            return redirect()->route('admin.category-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
+            return redirect()->route('admin.orders-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
         }
     }
 
@@ -83,9 +83,9 @@ class OrderController extends Controller
                 'name' => $request->get('name'),
             ]);
 
-            return redirect()->route('admin.category-index')->with('success', 'Thành Công!');
+            return redirect()->route('admin.orders-index')->with('success', 'Thành Công!');
         } catch (\Exception $exception) {
-            return redirect()->route('admin.category-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
+            return redirect()->route('admin.orders-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
         }
     }
 
@@ -100,9 +100,9 @@ class OrderController extends Controller
             $this->orderItemRepository->deleteByOrderId($id);
             $this->orderRepository->delete($id);
 
-            return redirect()->route('admin.category-index')->with('success', 'Thành Công!');
+            return redirect()->route('admin.orders-index')->with('success', 'Thành Công!');
         } catch (\Exception $exception) {
-            return redirect()->route('admin.category-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
+            return redirect()->route('admin.orders-index')->with('error', 'Không Thành Công: ' . $exception->getMessage());
         }
     }
 }

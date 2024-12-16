@@ -95,6 +95,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Đơn Hàng Hôm Nay</h6>
             </div>
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
@@ -131,6 +132,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

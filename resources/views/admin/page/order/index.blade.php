@@ -10,49 +10,50 @@
                 Thêm Sản Phẩm Mới
             </a>
         </div>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">TÊN KHÁCH HÀNG</th>
-                <th scope="col">SĐT</th>
-                <th scope="col">TRẠNG THÁI</th>
-                <th scope="col">TỔNG TIỀN</th>
-                <th scope="col">NGÀY ORDER</th>
-                <th scope="col">NGÀY TẠO</th>
-                <th scope="col">NGÀY SỬA</th>
-                <th scope="col">CHỨC NĂNG</th>
-            </tr>
-            </thead>
-            <tbody>
-                @foreach($orders as $order)
-                    <tr>
-                        <th scope="row">{{ $order->id }}</th>
-                        <td>{{ $order->customer_name }}</td>
-                        <td>{{ $order->phone_number }}</td>
-                        <td>{{ $order->status }}</td>
-                        <td>{{ $order->total_price }}</td>
-                        <td>{{ $order->order_date }}</td>
-                        <td>{{ $order->created_at }}</td>
-                        <td>{{ $order->updated_at }}</td>
-                        <td>
-                            <form method="POST" action="{{ route('orders.delete', ['id' => $order->id]) }}" id="deleteForm_{{ $order->id }}">
-                            @csrf
-                            <div class="btn-group-lg">
-                                <a href="{{ route('orders.print', ['id' => $order->id]) }}" type="button" class="btn btn-outline-success">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $order->id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">TÊN KHÁCH HÀNG</th>
+                    <th scope="col">SĐT</th>
+                    <th scope="col">TRẠNG THÁI</th>
+                    <th scope="col">TỔNG TIỀN</th>
+                    <th scope="col">NGÀY ORDER</th>
+                    <th scope="col">NGÀY TẠO</th>
+                    <th scope="col">NGÀY SỬA</th>
+                    <th scope="col">CHỨC NĂNG</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($orders as $order)
+                        <tr>
+                            <th scope="row">{{ $order->id }}</th>
+                            <td>{{ $order->customer_name }}</td>
+                            <td>{{ $order->phone_number }}</td>
+                            <td>{{ $order->status }}</td>
+                            <td>{{ $order->total_price }}</td>
+                            <td>{{ $order->order_date }}</td>
+                            <td>{{ $order->created_at }}</td>
+                            <td>{{ $order->updated_at }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('orders.delete', ['id' => $order->id]) }}" id="deleteForm_{{ $order->id }}">
+                                @csrf
+                                <div class="btn-group-lg">
+                                    <a href="{{ route('orders.print', ['id' => $order->id]) }}" type="button" class="btn btn-outline-success">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $order->id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -35,42 +35,43 @@
                 </div>
             </div>
         </div>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">TÊN</th>
-                <th scope="col">NGÀY TẠO</th>
-                <th scope="col">NGÀY SỬA</th>
-                <th scope="col">CHỨC NĂNG</th>
-            </tr>
-            </thead>
-            <tbody>
-                @foreach($categories as $category)
-                    <tr>
-                        <th scope="row">{{ $category->id }}</th>
-                        <td>{{ $category->name }}</td>
-                        <td>{{ $category->created_at }}</td>
-                        <td>{{ $category->updated_at }}</td>
-                        <td>
-                            <form method="POST" action="{{ route('admin.category-delete', ['id' => $category->id]) }}" id="deleteForm_{{ $category->id }}">
-                            @csrf
-                            <div class="btn-group-lg">
-                                <button type="button" class="btn btn-outline-info edit-category-btn" data-bs-toggle="modal" data-bs-target="#categoryEditModal" data-id="{{ $category->id }}"
-                                   data-name="{{ $category->name }}">
-                                    <i class="text-info fas fa-pen-alt"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $category->id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">TÊN</th>
+                    <th scope="col">NGÀY TẠO</th>
+                    <th scope="col">NGÀY SỬA</th>
+                    <th scope="col">CHỨC NĂNG</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($categories as $category)
+                        <tr>
+                            <th scope="row">{{ $category->id }}</th>
+                            <td>{{ $category->name }}</td>
+                            <td>{{ $category->created_at }}</td>
+                            <td>{{ $category->updated_at }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('admin.category-delete', ['id' => $category->id]) }}" id="deleteForm_{{ $category->id }}">
+                                @csrf
+                                <div class="btn-group-lg">
+                                    <button type="button" class="btn btn-outline-info edit-category-btn" data-bs-toggle="modal" data-bs-target="#categoryEditModal" data-id="{{ $category->id }}"
+                                    data-name="{{ $category->name }}">
+                                        <i class="text-info fas fa-pen-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $category->id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal -->
