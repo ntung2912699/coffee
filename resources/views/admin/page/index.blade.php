@@ -3,7 +3,7 @@
 @section('content')
     <div class="dashboad" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Bảng Điều Khiển</h1>
+            <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">BẢNG ĐIỀU KHIỂN</h5>
             <a href="{{ route('welcome') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Về Màn Hình Order</a>
         </div>
 

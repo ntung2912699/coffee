@@ -4,7 +4,9 @@
 @section('content')
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"><a href="{{ route('admin.index') }}"><i class="fas fa-arrow-circle-left"></i></a> Sản Phẩm</h1>
+            <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">
+                <a href="{{ route('admin.index') }}"><i class="fas fa-arrow-circle-left"></i></a> SẢN PHẨM
+            </h5>
             <a href="#" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#productModal">
                 <i class="fas fa-plus"></i>
                 Thêm Sản Phẩm Mới

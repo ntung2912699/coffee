@@ -81,11 +81,10 @@ class HomeController extends Controller
             'items.*.price' => 'required|numeric|min:0',
             'total' => 'required|numeric|min:0',
         ]);
-
         // Lưu đơn hàng vào bảng `orders`
         $order = new Order();
-        $order->customer_name = 'new customer';
-        $order->phone_number = 'N/A';
+        $order->customer_name = !empty($request->get('customerName')) ? $request->get('customerName') : 'new customer';
+        $order->phone_number = !empty($request->get('customerPhone')) ? $request->get('customerPhone') : 'N/A';
         $order->status = 'pending'; // Trạng thái mặc định
         $order->total_price = $validated['total'];
         $order->order_date = now(); // Gán ngày hiện tại
@@ -114,8 +113,34 @@ class HomeController extends Controller
      */
     public function printOrder($id)
     {
+        // Tìm đơn hàng với thông tin các sản phẩm liên quan
         $order = Order::with('items.product')->findOrFail($id);
 
+        // Thông tin thanh toán (sử dụng ví dụ như MB Bank)
+        $bankName = 'MB BANK';
+        $accountNumber = '001099022228';
+
+        // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
+        $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
+
+        // Tạo URL của Google Chart API để tạo mã QR
+        $qrCodeUrl = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=" . urlencode($qrData);
+
+        // Trả về view và truyền dữ liệu đơn hàng cùng URL của mã QR
+        return view('order.print-order', [
+            'order' => $order,
+            'qrCodeUrl' => $qrCodeUrl,  // URL mã QR được tạo từ Google API
+        ]);
+    }
+
+//    /**
+//     * @param $id
+//     * @return \Illuminate\Container\Container|mixed|object
+//     */
+//    public function printOrder($id)
+//    {
+//        $order = Order::with('items.product')->findOrFail($id);
+//
 //        // Thông tin thanh toán
 //        $bankName = 'MB BANK';
 //        $accountNumber = '001099022228';
@@ -128,17 +153,17 @@ class HomeController extends Controller
 //
 //        // Tạo đối tượng Writer
 //        $writer = new PngWriter();
-
-        // Lưu mã QR vào file
+//
+//        // Lưu mã QR vào file
 //        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
 //        $writer->write($qrCode)->saveToFile($qrCodePath);
-
-        // Trả về view
-        return view('order.print-order', [
-            'order' => $order,
-//            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
-        ]);
-    }
+//
+//        // Trả về view
+//        return view('order.print-order', [
+//            'order' => $order,
+////            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
+//        ]);
+//    }
 
     /**
      * @param $orderId

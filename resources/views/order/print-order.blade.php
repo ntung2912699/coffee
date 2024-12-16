@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">THANH TOÁN ĐƠN HÀNG</h1>
+        <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">THANH TOÁN ĐƠN HÀNG</h5>
         <a href="{{ route('welcome') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
             <i class="fas fa-user-alt fa-sm text-white-50"></i> Quay Về Trang Order
         </a>
@@ -48,10 +48,11 @@
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
-{{--        <div class="text-center mt-4">--}}
-{{--            <h4>Quét mã QR để thanh toán</h4>--}}
+        <div class="text-center mt-4">
+            <h4>Quét mã QR để thanh toán</h4>
+            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="200">
 {{--            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />--}}
-{{--        </div>--}}
+        </div>
 
         <div class="print-button text-center mt-3">
            <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
