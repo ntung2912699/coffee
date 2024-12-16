@@ -9,20 +9,20 @@ services:
       - .:/var/www
     environment:
       - DB_CONNECTION=pgsql
-      - DB_HOST=dpg-ctc66s1u0jms73crasbg-a
+      - DB_HOST=dpg-ctfqg4d6l47c73bav820-a
       - DB_PORT=5432
-      - DB_DATABASE=auto99db
-      - DB_USERNAME=auto99db_user
-      - DB_PASSWORD=xj5S0y46AcJoNP6iyTy8lKMecfJ7Ppwa
+      - DB_DATABASE=coffee_gio
+      - DB_USERNAME=coffee_gio_user
+      - DB_PASSWORD=LM2bBV3r6lRbD4ALwegKQmRSXVzoJ7R1
     networks:
       - app_network
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: auto99db
-      POSTGRES_USER: auto99db_user
-      POSTGRES_PASSWORD: xj5S0y46AcJoNP6iyTy8lKMecfJ7Ppwa
+      POSTGRES_DB: coffee_gio
+      POSTGRES_USER: coffee_gio_user
+      POSTGRES_PASSWORD: LM2bBV3r6lRbD4ALwegKQmRSXVzoJ7R1
     networks:
       - app_network
 
