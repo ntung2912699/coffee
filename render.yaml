@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: coffe-gio
+    env: docker
+    plan: starter
+    dockerfile_path: ./Dockerfile
+    build_args:
+    # Nếu có, thêm các đối số cần thiết cho quá trình xây dựng
+    start_command: ["/start.sh"]
+    health_check_path: /
+    port: 80
