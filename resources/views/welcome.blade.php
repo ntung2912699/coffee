@@ -11,7 +11,7 @@
 
         <div class="row">
             <!-- Menu phần trái (80%) -->
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class="card shadow mb-4" style="min-height: 760px">
                     <div class="card-header py-3">
                         <h2 class="m-0 font-weight-bold text-primary">MENU</h2>
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Giỏ hàng phần phải (30%) -->
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="card shadow mb-4" style="min-height: 760px">
                     <div class="card-header py-3">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
