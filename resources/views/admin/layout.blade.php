@@ -13,6 +13,7 @@
 
             <!-- Main Content -->
             <div id="content">
+                <div style="height:15px"></div>
 {{--       @include('admin.component.header')--}}
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
