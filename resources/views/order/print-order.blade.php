@@ -10,8 +10,8 @@
     <div class="container" style="max-width: 500px" id="invoice">
         <div class="invoice-header text-center">
             <h1 class="font-weight-bold">COFFEE GIÓ</h1>
-            <p>Địa chỉ: 123 Đường ABC, Phường XYZ, TP HCM</p>
-            <p>Điện thoại: 0123 456 789</p>
+            <p>Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
+            <p>Điện thoại: 0968 251 663</p>
             <h3 class="mt-3">HÓA ĐƠN BÁN LẺ</h3>
         </div>
 
