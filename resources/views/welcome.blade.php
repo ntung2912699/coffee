@@ -32,6 +32,27 @@
         #cart-modal .modal-dialog {
             max-width: 400px;
         }
+
+        @media (max-width: 820px) {
+            #cart-icon {
+                display: inline;
+            }
+
+            #cart-right {
+                display: none;
+            }
+        }
+
+        @media (min-width: 820px) {
+            #cart-icon {
+                display: none;
+            }
+
+            #cart-right {
+                display: contents;
+            }
+        }
+        
     </style>
     <div class="dashboard" style="min-height: 760px;">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -47,7 +68,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="cart-modal-label">Giỏ hàng</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -120,7 +141,7 @@
             </div>
 
             <!-- Giỏ hàng phần phải (30%) -->
-            <div class="col-lg-3">
+            <div class="col-lg-3" id="cart-right">
                 <div class="card shadow mb-4" style="min-height: 760px">
                     <div class="card-header py-3">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
