@@ -13,7 +13,7 @@
 
             <!-- Main Content -->
             <div id="content">
-                @include('admin.component.header')
+<!--                 @include('admin.component.header') -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Flash Messages -->
