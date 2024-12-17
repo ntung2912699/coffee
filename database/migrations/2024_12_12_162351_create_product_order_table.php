@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('customer_name');
             $table->string('phone_number')->nullable();
+            $table->string('address')->nullable();
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending'); // Trạng thái đơn hàng
             $table->decimal('total_price', 10, 2);
             $table->timestamp('order_date')->useCurrent(); // Ngày đặt hàng

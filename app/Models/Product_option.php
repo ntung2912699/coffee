@@ -14,7 +14,7 @@ class Product_option extends Model
 
     // Các thuộc tính có thể mass assign
     protected $fillable = [
-        'product_id', 'name'
+        'product_id', 'attribute_name', 'attribute_value', 'price'
     ];
 
     // Mối quan hệ với Product

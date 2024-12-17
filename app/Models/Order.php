@@ -13,7 +13,7 @@ class Order extends Model
 
     // Các thuộc tính có thể mass assign
     protected $fillable = [
-        'customer_name', 'phone_number', 'status', 'total_price', 'order_date'
+        'customer_name', 'phone_number', 'address', 'status', 'total_price', 'order_date'
     ];
 
     // Mối quan hệ với OrderItem (mỗi đơn hàng có thể có nhiều sản phẩm)

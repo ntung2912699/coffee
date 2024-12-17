@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('product_option', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->string('name');
+            $table->unsignedBigInteger('product_id'); // Sản phẩm này thuộc về sản phẩm nào
+            $table->string('attribute_name'); // Tên thuộc tính (ví dụ: màu sắc, kích thước)
+            $table->string('attribute_value'); // Giá trị của thuộc tính (ví dụ: đỏ, XL)
+            $table->decimal('price', 10, 2)->nullable(); // Giá của thuộc tính (Ví dụ: topping có giá riêng)
             $table->timestamps();
 
-            $table
-                ->foreign('product_id')
+            // Liên kết với bảng `product`
+            $table->foreign('product_id')
                 ->references('id')
-                ->on('product');
+                ->on('product')
+                ->onDelete('cascade'); // Xóa thuộc tính nếu sản phẩm bị xóa
         });
     }
 

@@ -52,6 +52,7 @@ class ProductController extends Controller
         try {
             $products = $this->productRepository->getAll();
             $categories = $this->categoryRepository->getAll();
+
             return view('admin.page.product.index', compact('products', 'categories'));
         } catch (\Exception $exception) {
             return view('admin.page.error');
@@ -72,25 +73,33 @@ class ProductController extends Controller
         $formattedDecimalPrice = number_format($decimalPrice, 2, '.', '');
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|max:255',
             'category_id' => 'required|exists:category,id',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'nullable|max:1000',
+            'options' => 'nullable|array',
+            'options.*.attribute_name' => 'required|string',
+            'options.*.attribute_value' => 'required|string',
+            'options.*.price' => 'nullable|numeric',
         ]);
 
         try {
+
+            // Create the product
             $product = $this->productRepository->create([
-                'name' => $request->get('name'),
-                'category_id' => $request->get('category_id'),
-                'description' => $request->get('description'),
+                'name' => $request->name,
+                'category_id' => $request->category_id,
                 'price' => $formattedDecimalPrice,
-                'image_url' => '',
+                'description' => $request->description,
             ]);
 
-            if (!empty($request->get('options'))) {
-                foreach ($request->get('options') as $item) {
+            // Check if options are provided
+            if ($request->has('options')) {
+                foreach ($request->options as $option) {
                     $this->productOptionRepository->create([
-                       'product_id' => $product->id,
-                       'name' => $item,
+                        'product_id' => $product->id,
+                        'attribute_name' => $option['attribute_name'],
+                        'attribute_value' => $option['attribute_value'],
+                        'price' => $option['price'],  // optional price for each option
                     ]);
                 }
             }
@@ -131,17 +140,22 @@ class ProductController extends Controller
                 'description' => $request->get('description'),
             ]);
 
-            // Lấy danh sách các option IDs từ request (dựa trên ID, không phải tên)
+            // Xử lý các option
             $newOptions = $request->get('options', []);
+
+            // Nếu có các tùy chọn mới
             if (!empty($newOptions)) {
-                // Lấy danh sách các option ID hiện tại từ database
+                // Lấy danh sách các option ID hiện tại từ database và xóa chúng
                 $this->productOptionRepository->deleteByProductId($id);
-                // Thêm hoặc cập nhật các tùy chọn mới
+
+                // Lặp qua các tùy chọn mới để thêm vào cơ sở dữ liệu
                 foreach ($newOptions as $newOption) {
-                    // Nếu không tồn tại, tạo mới
+                    // Thêm các tùy chọn mới vào bảng sản phẩm options
                     $this->productOptionRepository->create([
                         'product_id' => $id,
-                        'name' => $newOption,
+                        'attribute_name' => $newOption['attribute_name'],  // Tên thuộc tính
+                        'attribute_value' => $newOption['attribute_value'], // Giá trị của thuộc tính
+                        'price' => isset($newOption['price']) ? $newOption['price'] : null, // Giá (nếu có)
                     ]);
                 }
             }

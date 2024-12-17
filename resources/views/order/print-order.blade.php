@@ -7,34 +7,34 @@
             <i class="fas fa-user-alt fa-sm text-white-50"></i> Quay Về Trang Order
         </a>
     </div>
-    <div class="container" style="max-width: 500px" id="invoice">
+    <div class="container" style="max-width: 700px" id="invoice">
         <div class="invoice-header text-center">
             <h1 class="font-weight-bold">COFFEE GIÓ</h1>
             <p>Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
             <p>Điện thoại: 0968 251 663</p>
             <h3 class="mt-3">HÓA ĐƠN BÁN LẺ</h3>
         </div>
-
         <div class="invoice-info">
             <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
             <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
             <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
             <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
+            <p><strong>Địa chỉ:</strong> {{ $order->address }}</p>
         </div>
-
+        <b class="mt-3">CHI TIẾT ĐƠN HÀNG :</b>
         <table class="table table-bordered mt-3">
             <thead>
             <tr>
-                <th style="width: 35%;">Tên sản phẩm</th>
+                <th style="width: 40%;">Tên sản phẩm</th>
                 <th class="text-center" style="width: 10%;">SL</th>
-                <th class="text-right" style="width: 27.5%;">Đơn giá</th>
-                <th class="text-right" style="width: 27.5%;">Thành tiền</th>
+                <th class="text-right" style="width: 25%;">Đơn giá</th>
+                <th class="text-right" style="width: 25%;">Thành tiền</th>
             </tr>
             </thead>
             <tbody>
             @foreach($order->items as $item)
                 <tr>
-                    <td>{{ $item->product->name }}</td>
+                    <td>{{ $item->product->name }} {{ $item->attributes }}</td>
                     <td class="text-center">{{ $item->quantity }}</td>
                     <td class="text-right">{{ number_format($item->price) }} VNĐ</td>
                     <td class="text-right">{{ number_format($item->price * $item->quantity) }} VNĐ</td>
@@ -50,8 +50,8 @@
 
         <div class="text-center mt-4">
             <h4>Quét mã QR để thanh toán</h4>
-            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="200">
-{{--            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />--}}
+{{--            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="200">--}}
+            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />
         </div>
 
         <div class="print-button text-center mt-3">

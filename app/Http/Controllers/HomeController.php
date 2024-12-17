@@ -79,12 +79,14 @@ class HomeController extends Controller
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
+            'items.*.topping' => 'nullable|array',
             'total' => 'required|numeric|min:0',
         ]);
         // Lưu đơn hàng vào bảng `orders`
         $order = new Order();
         $order->customer_name = !empty($request->get('customerName')) ? $request->get('customerName') : 'new customer';
         $order->phone_number = !empty($request->get('customerPhone')) ? $request->get('customerPhone') : 'N/A';
+        $order->address = !empty($request->get('customerAddress')) ? $request->get('customerAddress') : 'N/A';
         $order->status = 'pending'; // Trạng thái mặc định
         $order->total_price = $validated['total'];
         $order->order_date = now(); // Gán ngày hiện tại
@@ -93,18 +95,22 @@ class HomeController extends Controller
         // Lưu từng sản phẩm vào bảng `order_items`
         foreach ($validated['items'] as $item) {
             $totalItemPrice = $item['quantity'] * $item['price']; // Tính tổng tiền cho từng sản phẩm
-
             $order->items()->create([
                 'product_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
                 'total_price' => $totalItemPrice, // Lưu tổng tiền
+                'attributes' => !empty($item['topping'])?$item['topping']['name']:'', // Lưu tổng tiền
             ]);
         }
 
         Mail::to('ntung2912699@gmail.com')->send(new OrderCreated($order));
+        $isAuthenticated = auth()->check();
 
-        return response()->json(['order_id' => $order->id]);
+        return response()->json([
+            'order_id' => $order->id,
+            'is_authenticated' => $isAuthenticated,
+        ]);
     }
 
     /**
@@ -113,57 +119,46 @@ class HomeController extends Controller
      */
     public function printOrder($id)
     {
-        // Tìm đơn hàng với thông tin các sản phẩm liên quan
         $order = Order::with('items.product')->findOrFail($id);
 
-        // Thông tin thanh toán (sử dụng ví dụ như MB Bank)
+        // Thông tin thanh toán
         $bankName = 'MB BANK';
         $accountNumber = '001099022228';
 
         // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
         $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
 
-        // Tạo URL của Google Chart API để tạo mã QR
-        $qrCodeUrl = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=" . urlencode($qrData);
+        // Tạo đối tượng QrCode
+        $qrCode = new QrCode($qrData);
 
-        // Trả về view và truyền dữ liệu đơn hàng cùng URL của mã QR
+        // Tạo đối tượng Writer
+        $writer = new PngWriter();
+
+        // Lưu mã QR vào file
+        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
+        $writer->write($qrCode)->saveToFile($qrCodePath);
+
+        // Trả về view
         return view('order.print-order', [
             'order' => $order,
-            'qrCodeUrl' => $qrCodeUrl,  // URL mã QR được tạo từ Google API
+            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
         ]);
     }
 
-//    /**
-//     * @param $id
-//     * @return \Illuminate\Container\Container|mixed|object
-//     */
-//    public function printOrder($id)
-//    {
-//        $order = Order::with('items.product')->findOrFail($id);
-//
-//        // Thông tin thanh toán
-//        $bankName = 'MB BANK';
-//        $accountNumber = '001099022228';
-//
-//        // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
-//        $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
-//
-//        // Tạo đối tượng QrCode
-//        $qrCode = new QrCode($qrData);
-//
-//        // Tạo đối tượng Writer
-//        $writer = new PngWriter();
-//
-//        // Lưu mã QR vào file
-//        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
-//        $writer->write($qrCode)->saveToFile($qrCodePath);
-//
-//        // Trả về view
-//        return view('order.print-order', [
-//            'order' => $order,
-////            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
-//        ]);
-//    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Container\Container|mixed|object
+     */
+    public function show($id)
+    {
+        // Lấy thông tin đơn hàng theo ID
+        $order = Order::findOrFail($id);  // Tìm đơn hàng theo ID, nếu không tìm thấy sẽ trả về lỗi 404
+
+        // Trả về view với dữ liệu đơn hàng
+        return view('order.show', compact('order'));
+    }
+
 
     /**
      * @param $orderId
@@ -238,5 +233,16 @@ class HomeController extends Controller
             return redirect()->route('orders.print', ['id' => $id])
                 ->with('error', 'Đã xảy ra lỗi trong quá trình hủy đơn. Vui lòng kiểm tra lại.');
         }
+    }
+
+    /**
+     * @param $categoryId
+     * @return mixed
+     */
+    public function getProductsByCategory($categoryId)
+    {
+        $products = $this->productRepository->getByCategoryId($categoryId);
+
+        return response()->json($products);
     }
 }

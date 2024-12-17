@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\Product;
 
+use App\Models\Product;
 use App\Repositories\BaseRepository;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
@@ -9,5 +10,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function getModel()
     {
         return \App\Models\Product::class;
+    }
+
+    public function getByCategoryId($categoryId)
+    {
+        return Product::where('category_id', $categoryId)->get();
     }
 }

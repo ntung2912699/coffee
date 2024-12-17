@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('quantity'); // Số lượng sản phẩm trong đơn hàng
             $table->decimal('price', 10, 2); // Giá của sản phẩm tại thời điểm mua
             $table->decimal('total_price', 10, 2); // Tổng giá trị của sản phẩm trong đơn hàng
+            $table->text('attributes')->nullable(); // Lưu thông tin các thuộc tính (topping, màu sắc, kích thước)
             $table->timestamps();
         });
     }
