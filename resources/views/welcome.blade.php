@@ -227,109 +227,107 @@
                 </section>
             </div>
         </div>
-        <div class="container-fluid">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="margin-top: 30px">
-                <h5 class="h5 mb-0 text-primary text-800"><i class="fas fa-shopping-bag"></i> MÀN HÌNH ORDER</h5>
-                <div class="cart-icon" id="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cart-count" class="badge badge-danger">0</span>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4" style="margin-top: 30px">
+            <h5 class="h5 mb-0 text-primary text-800"><i class="fas fa-shopping-bag"></i> MÀN HÌNH ORDER</h5>
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="badge badge-danger">0</span>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Danh sách category (20%) -->
+            <div class="col-lg-3 category-list" id="category-list-container">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-icons"></i></h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Danh mục trên desktop -->
+                        <ul class="list-group list-group-flush d-none d-lg-block" id="category-list">
+                            @foreach($categories as $category)
+                                <li class="list-group-item category-item {{ $loop->first ? 'active' : '' }}" data-category-id="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <!-- Danh mục trên mobile -->
+                        <select class="form-control d-lg-none" id="category-select">
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ $loop->first ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-
-                <!-- Danh sách category (20%) -->
-                <div class="col-lg-3 category-list" id="category-list-container">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-icons"></i></h2>
-                        </div>
-                        <div class="card-body">
-                            <!-- Danh mục trên desktop -->
-                            <ul class="list-group list-group-flush d-none d-lg-block" id="category-list">
-                                @foreach($categories as $category)
-                                    <li class="list-group-item category-item {{ $loop->first ? 'active' : '' }}" data-category-id="{{ $category->id }}">
-                                        {{ $category->name }}
+            <!-- Danh sách sản phẩm (50%) -->
+            <div class="col-lg-5 product-list">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-mug-hot"></i></h2>
+                    </div>
+                    <div class="card-body">
+                        <ul id="product-container" class="list-group list-group-flush">
+                            <!-- Sản phẩm sẽ được tải vào đây dựa trên danh mục đã chọn -->
+                            @if($categories->isNotEmpty())
+                                @foreach($categories->first()->product as $product)
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1 card-title">{{ $product->name }}</h6>
+                                                <b class="text-muted">{{ number_format($product->price / 1000) }}K</b>
+                                            </div>
+                                            <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="{{ $product->id }}" data-price="{{ $product->price }}" data-option="{{ $product->attributes }}"></i>
+                                        </div>
                                     </li>
                                 @endforeach
-                            </ul>
-
-                            <!-- Danh mục trên mobile -->
-                            <select class="form-control d-lg-none" id="category-select">
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $loop->first ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                            @endif
+                        </ul>
                     </div>
                 </div>
+            </div>
 
-                <!-- Danh sách sản phẩm (50%) -->
-                <div class="col-lg-5 product-list">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-mug-hot"></i></h2>
-                        </div>
-                        <div class="card-body">
-                            <ul id="product-container" class="list-group list-group-flush">
-                                <!-- Sản phẩm sẽ được tải vào đây dựa trên danh mục đã chọn -->
-                                @if($categories->isNotEmpty())
-                                    @foreach($categories->first()->product as $product)
-                                        <li class="list-group-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="mb-1 card-title">{{ $product->name }}</h6>
-                                                    <b class="text-muted">{{ number_format($product->price / 1000) }}K</b>
-                                                </div>
-                                                <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="{{ $product->id }}" data-price="{{ $product->price }}" data-option="{{ $product->attributes }}"></i>
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                @endif
-                            </ul>
+            <!-- Giỏ hàng (30%) -->
+            <div class="col-lg-4" id="cart-right">
+                <div class="card shadow mb-4 form-customer" style="min-height: 760px">
+                    <div class="card-header py-3">
+                        <div class="d-sm-flex align-items-center justify-content-between">
+                            <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-cart-plus"></i></h2>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-outline-danger shadow-sm" id="clear-cart-btn">Xóa Giỏ Hàng</a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Giỏ hàng (30%) -->
-                <div class="col-lg-4" id="cart-right">
-                    <div class="card shadow mb-4 form-customer" style="min-height: 760px">
-                        <div class="card-header py-3">
-                            <div class="d-sm-flex align-items-center justify-content-between">
-                                <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-cart-plus"></i></h2>
-                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-outline-danger shadow-sm" id="clear-cart-btn">Xóa Giỏ Hàng</a>
+                    <div class="card-body">
+                        <!-- Input Tên khách và Số điện thoại -->
+                        <!-- Danh sách sản phẩm trong giỏ -->
+                        <ul id="cart-list-left" class="list-group list-group-flush">
+                            <!-- Các sản phẩm trong giỏ hàng sẽ được thêm vào đây -->
+                        </ul>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Tổng tiền:</strong>
+                            <span class="font-weight-bold" id="total-price">0 VNĐ</span>
+                        </div>
+                        <p style="margin-top: 20px">THÔNG TIN KHÁCH HÀNG</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="customer-name" class="form-label">Tên khách</label>
+                                <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="customer-phone" class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="customer-address" class="form-label">Địa Chỉ</label>
+                                <input type="text" class="form-control customer-address" id="customer-address-left" placeholder="Nhập địa chỉ">
                             </div>
                         </div>
-                        <div class="card-body">
-                            <!-- Input Tên khách và Số điện thoại -->
-                            <!-- Danh sách sản phẩm trong giỏ -->
-                            <ul id="cart-list-left" class="list-group list-group-flush">
-                                <!-- Các sản phẩm trong giỏ hàng sẽ được thêm vào đây -->
-                            </ul>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <strong>Tổng tiền:</strong>
-                                <span class="font-weight-bold" id="total-price">0 VNĐ</span>
-                            </div>
-                            <p style="margin-top: 20px">THÔNG TIN KHÁCH HÀNG</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="customer-name" class="form-label">Tên khách</label>
-                                    <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="customer-phone" class="form-label">Số điện thoại</label>
-                                    <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="customer-address" class="form-label">Địa Chỉ</label>
-                                    <input type="text" class="form-control customer-address" id="customer-address-left" placeholder="Nhập địa chỉ">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary mt-3 checkout-btn" id="checkout-btn">Đặt Hàng</button>
-                        </div>
+                        <button class="btn btn-primary mt-3 checkout-btn" id="checkout-btn">Đặt Hàng</button>
                     </div>
                 </div>
             </div>
