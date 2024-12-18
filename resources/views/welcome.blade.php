@@ -5,14 +5,17 @@
         /* Biểu tượng giỏ hàng */
         .cart-icon {
             position: fixed;
-            bottom: 20px;
+            bottom: 50px;
             right: 20px;
             background-color: #28a745;
             color: white;
             border-radius: 50%;
+            width: 50px;
+            height: 50px;
             padding: 10px;
             cursor: pointer;
             z-index: 1000;
+            font-size: 25px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -211,6 +214,18 @@
             }
         }
 
+        #cart-popup {
+            animation: fadeInOut 3s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+
     </style>
     <div class="dashboard" style="min-height: 760px;">
         <div class="row">
@@ -221,9 +236,29 @@
                     <p class="lead text-muted"><i class="fas fa-home"></i> : Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
                     <p class="lead text-muted"><i class="fas fa-phone"></i> : 0968 251 663</p>
                     <p class="lead text-muted"><i class="fas fa-clock"></i> : 8:00 AM - 23:30 PM</p>
-                    <a href="{{ route('admin.index') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                        <i class="fas fa-user-alt fa-sm text-white-50"></i> Quản Lý Cửa Hàng
-                    </a>
+
+                    @if (auth()->check())
+                        <!-- Dropdown khi đăng nhập -->
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-alt fa-sm text-white-50"></i> {{ auth()->user()->name }}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-cog"></i> Quản Lý Cửa Hàng</a></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                    @else
+                    <!-- Nút hiển thị mặc định nếu chưa đăng nhập -->
+                        <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
+                        </a>
+                    @endif
                 </section>
             </div>
         </div>
@@ -333,24 +368,23 @@
             </div>
         </div>
 
-        <!-- Topping Selection Modal (Popup) -->
-        <div id="topping-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="toppingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div id="cart-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 16px;">
+            <span>Sản phẩm đã được thêm vào giỏ hàng!</span>
+        </div>
+
+        <div class="modal fade" id="product-options-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="toppingModalLabel">Chọn topping</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title" id="product-modal-title">Chọn tùy chọn sản phẩm</h5>
+                        <i type="button" class="btn-close text-secondary fas fa-close" data-bs-dismiss="modal" aria-label="Close"></i>
                     </div>
                     <div class="modal-body">
-                        <ul id="topping-list">
-                            <!-- List of toppings will be inserted here dynamically -->
-                        </ul>
+                        <div id="product-options-container"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="button" class="btn btn-primary" id="add-topping">Thêm topping</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" id="confirm-options-btn" class="btn btn-primary">Xác nhận</button>
                     </div>
                 </div>
             </div>
@@ -399,13 +433,16 @@
         $(document).on('click', '.category-item', function () {
             $('.category-item').removeClass('active');
             $(this).addClass('active');
-
+            // Hiển thị loading spinner
+            showLoading();
             const categoryId = $(this).data('category-id');
 
             $.ajax({
                 url: `/categories/${categoryId}/products`,
                 method: 'GET',
                 success: function (data) {
+                    // Hiển thị loading spinner
+                    hideLoading()
                     const productContainer = $('#product-container');
                     productContainer.empty();
 
@@ -419,7 +456,7 @@
                                         <h6 class="mb-1 card-title">${product.name}</h6>
                                         <b class="text-muted">${(product.price / 1000).toFixed(0)}K</b>
                                     </div>
-                                    <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="${product.id}" data-price="${product.price}" data-option="${product.attributes}"></i>
+                                    <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="${product.id}" data-price="${product.price}"></i>
                                 </div>
                             </li>
                         `);
@@ -429,6 +466,7 @@
                     productContainer.append(productList);  // Append ul to the container
                 },
                 error: function () {
+                    hideLoading()
                     alert('Lỗi khi tải danh sách sản phẩm. Vui lòng thử lại.');
                 }
             });
@@ -438,10 +476,12 @@
         $(document).on('change', '#category-select', function () {
             const categoryId = $(this).val();
 
+            showLoading()
             $.ajax({
                 url: `/categories/${categoryId}/products`,
                 method: 'GET',
                 success: function (data) {
+                    hideLoading()
                     const productContainer = $('#product-container');
                     productContainer.empty();
 
@@ -457,7 +497,7 @@
                             </div>
                             <i class="fas fa-cart-plus add-to-cart text-success"
                                 data-product-id="${product.id}"
-                                data-price="${product.price}" data-option=${product.attributes}"></i>
+                                data-price="${product.price}"></i>
                         </div>
                     </li>
                 `);
@@ -467,6 +507,7 @@
                     productContainer.append(productList);  // Append ul to the container
                 },
                 error: function () {
+                    hideLoading()
                     alert('Lỗi khi tải danh sách sản phẩm. Vui lòng thử lại.');
                 }
             });
@@ -476,7 +517,6 @@
     <script>
         // Khởi tạo một mảng giỏ hàng trống hoặc lấy giỏ hàng từ localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let selectedTopping = null;
         let selectedProductId = null;
         let selectedProductName = null;
         let selectedProductPrice = null;
@@ -502,12 +542,11 @@
                             <h6 class="mb-1">${item.name}</h6>
                             <span>Giá: <b class="text-muted">${formatCurrency(item.price)}</b></span><br>
                             <span>Số lượng: ${item.quantity}</span>
-                            ${item.topping ? `<br><span>Topping: <b class="text-muted">${item.topping.name} - ${formatCurrency(item.topping.price)}</b></span>` : ''}
                         </div>
                         <div>
-                            <i class="fas fa-minus-circle decrease-quantity text-secondary" data-product-id="${item.id}"></i>
-                            <i class="fas fa-trash-alt remove-from-cart text-danger" data-product-id="${item.id}"></i>
-                            <i class="fas fa-plus-circle increase-quantity text-success" data-product-id="${item.id}"></i>
+                            <i class="fas fa-minus-circle decrease-quantity text-secondary" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
+                            <i class="fas fa-trash-alt remove-from-cart text-danger" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
+                            <i class="fas fa-plus-circle increase-quantity text-success" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
                         </div>
                     </div>
                 </li>
@@ -530,102 +569,112 @@
             }).format(amount) + ' VNĐ';
         }
 
-        // Thêm sản phẩm vào giỏ
         $(document).on('click', '.add-to-cart', function () {
             const productId = $(this).data('product-id');
             const productName = $(this).closest('li').find('.card-title').text();
             const productPrice = $(this).data('price');
-            let toppings = $(this).data('option');  // Lấy thông tin toppings từ data-option
 
-            // // Kiểm tra nếu sản phẩm có topping
-            // if (toppings && toppings.length > 0) {
-            //     selectedProductId = productId;
-            //     selectedProductName = productName;
-            //     selectedProductPrice = productPrice;
-            //     // Show topping selection modal
-            //     showToppingModal(toppings, productName, productPrice);
-            // } else {
-                // Nếu không có topping, thêm sản phẩm vào giỏ hàng ngay
-                addProductToCart(productId, productName, productPrice);
-            // }
+            // Lưu thông tin sản phẩm được chọn tạm thời
+            selectedProductId = productId;
+            selectedProductName = productName;
+            selectedProductPrice = parseInt(productPrice);
+
+            // Cập nhật tiêu đề modal
+            $('#product-modal-title').text(`Tùy chọn cho sản phẩm: ${productName}`);
+
+            // Fetch product options từ API
+            $.getJSON(`/product-options`, function (options) {
+                const $modalContainer = $('#product-options-container');
+                $modalContainer.empty(); // Xóa nội dung cũ
+
+                // Tạo giao diện checkbox cho từng nhóm tùy chọn
+                $.each(options, function (attributeName, attributes) {
+                    const $groupDiv = $('<div>', { class: 'option-group' });
+                    $groupDiv.append(`<h5><b>${attributeName}</b></h5>`);
+
+                    $.each(attributes, function (index, option) {
+                        const optionHTML = `
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input option-checkbox" id="option-${option.attribute_value}" data-price="${option.price}" value="${option.attribute_value}">
+                        <label class="form-check-label" for="option-${option.attribute_value}">
+                            ${option.attribute_value} (${Number(option.price).toLocaleString()} VNĐ)
+                        </label>
+                    </div>`;
+                        $groupDiv.append(optionHTML);
+                    });
+
+                    $modalContainer.append($groupDiv);
+                });
+
+                // Hiển thị modal
+                const modal = new bootstrap.Modal(document.getElementById('product-options-modal'));
+                modal.show();
+            });
         });
 
-        // Hiển thị popup chọn topping
-        function showToppingModal(toppings) {
-            const toppingList = $('#topping-list');
-            toppingList.empty();
+        // Xử lý khi người dùng nhấn nút xác nhận trong modal
+        $('#confirm-options-btn').on('click', function () {
+            const selectedOptions = [];
+            let totalOptionsPrice = 0;
 
-            toppings.forEach(topping => {
-                const toppingItem = $(
-                    `<li>
-                        <label>
-                            <input type="radio" name="topping" value="${topping.id}" data-price="${topping.price}">
-                                ${topping.attribute_value}
-                        </label>
-                    </li>`);
-            toppingList.append(toppingItem);
+            // Duyệt qua các checkbox đã chọn và thu thập thông tin
+            $('.option-checkbox:checked').each(function () {
+                selectedOptions.push($(this).val());
+                totalOptionsPrice += parseInt($(this).data('price'));
             });
 
-            $('#topping-modal').modal('show');
-            }
+            // Tạo tên sản phẩm bao gồm các tùy chọn
+            const finalProductName = `${selectedProductName} (${selectedOptions.join(' + ')})`;
 
-        // Thêm topping vào giỏ hàng
-        $('#add-topping').click(function () {
-            const selectedToppingId = $('input[name="topping"]:checked').val();
-            const selectedToppingPrice = $('input[name="topping"]:checked').data('price');
-            const selectedToppingName = $('input[name="topping"]:checked').parent().text().trim();
+            const finalOptionName = `${selectedOptions.join(' + ')}`;
 
-            if (!selectedToppingId) {
-                alert('Vui lòng chọn topping!');
-                return;
-            }
+            // Tính giá cuối cùng của sản phẩm
+            const finalProductPrice = selectedProductPrice + totalOptionsPrice;
 
-            // Thêm sản phẩm vào giỏ hàng với tên sản phẩm chính và tên topping
-            addProductToCart(selectedProductId, selectedProductName, selectedProductPrice, selectedToppingName, selectedToppingPrice);
+            // Thêm sản phẩm vào giỏ hàng
+            addProductToCart(selectedProductId, finalProductName, finalProductPrice, finalOptionName);
 
             // Đóng modal
-            $('#topping-modal').modal('hide');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('product-options-modal'));
+            modal.hide();
         });
 
-        // Thêm sản phẩm vào giỏ hàng (có hoặc không có topping)
-        function addProductToCart(productId, productName, productPrice, toppingName = null, toppingPrice = 0) {
-            const existingProductIndex = cart.findIndex(item => item.id === productId);
+        // Hàm thêm sản phẩm vào giỏ hàng (đã có ở mã cũ)
+        function addProductToCart(productId, productName, productPrice, optionsName) {
+            const existingProductIndex = cart.findIndex(item => item.id === productId && item.name === productName);
 
-            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
             if (existingProductIndex === -1) {
                 cart.push({
                     id: productId,
-                    name: productName,  // Tên sản phẩm chính
-                    price: parseInt(productPrice) + parseInt(toppingPrice), // Cộng giá topping vào giá sản phẩm
+                    name: productName,
+                    price: productPrice,
                     quantity: 1,
-                    topping: toppingName ? { name: toppingName, price: toppingPrice } : null
+                    options: optionsName
                 });
             } else {
-                // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
                 cart[existingProductIndex].quantity += 1;
-
-                // Nếu có topping, cập nhật topping và cộng giá topping vào giá sản phẩm
-                if (toppingName) {
-                    cart[existingProductIndex].topping = { name: toppingName, price: toppingPrice };
-                    cart[existingProductIndex].price = productPrice + toppingPrice * cart[existingProductIndex].quantity;
-                }
             }
 
-            // Cập nhật giỏ hàng sau khi thêm sản phẩm
+            // Cập nhật giỏ hàng
             updateCart();
+
+            // Hiển thị popup xác nhận
+            showCartPopup();
         }
 
         // Xóa sản phẩm khỏi giỏ
         $(document).on('click', '.remove-from-cart', function () {
-            const productId = $(this).data('product-id');
-            cart = cart.filter(item => item.id !== productId);
+            // const productId = $(this).data('product-id');
+            const productName = $(this).data('product-name');
+            cart = cart.filter(item => item.name !== productName);
             updateCart();
         });
 
         // Giảm số lượng sản phẩm trong giỏ
         $(document).on('click', '.decrease-quantity', function () {
             const productId = $(this).data('product-id');
-            const productIndex = cart.findIndex(item => item.id === productId);
+            const productName = $(this).data('product-name');
+            const productIndex = cart.findIndex(item => item.id === productId && item.name === productName);
             if (productIndex !== -1 && cart[productIndex].quantity > 1) {
                 cart[productIndex].quantity -= 1;
             }
@@ -635,7 +684,8 @@
         // Tăng số lượng sản phẩm trong giỏ
         $(document).on('click', '.increase-quantity', function () {
             const productId = $(this).data('product-id');
-            const productIndex = cart.findIndex(item => item.id === productId);
+            const productName = $(this).data('product-name');
+            const productIndex = cart.findIndex(item => item.id === productId && item.name === productName);
             if (productIndex !== -1) {
                 cart[productIndex].quantity += 1;
             }
@@ -656,8 +706,7 @@
 
             if (customerName && customerPhone && cart.length > 0) {
                 // Hiển thị loading spinner
-                $('#loading-spinner').show();
-                console.log(cart);
+                showLoading()
                 // Gửi dữ liệu giỏ hàng đến backend
                 $.ajax({
                     url: "{{ route('orders.store') }}",
@@ -672,19 +721,24 @@
                     },
                     success: function(response) {
                         // Ẩn loading spinner
-                        $('#loading-spinner').hide();
+                        hideLoading()
 
                         // Xóa giỏ hàng sau khi thanh toán
                         localStorage.removeItem('cart');
                         cart = [];
                         updateCart();
 
-                        // Chuyển hướng đến trang in hóa đơn
-                        window.location.href = `/orders/print/${response.order_id}`;
+                        if (response.is_authenticated === true) {
+                            // Nếu đã đăng nhập, chuyển đến trang in hóa đơn
+                             window.location.href = `/orders/print/${response.order_id}`;
+                        } else {
+                            // Nếu chưa đăng nhập, chuyển đến trang thông báo đơn hàng thành công
+                             window.location.href = `/order-success/${response.order_id}`;  // Đổi thành URL của trang thông báo đơn hàng thành công
+                        }
                     },
                     error: function(xhr) {
                         // Ẩn loading spinner
-                        $('#loading-spinner').hide();
+                        hideLoading()
                         alert('Đã xảy ra lỗi! Vui lòng thử lại.');
                     }
                 });
@@ -727,12 +781,11 @@
                     <h6 class="mb-1">${item.name}</h6>
                     <span>Giá: ${formatCurrency(item.price)}</span><br>
                     <span>Số lượng: ${item.quantity}</span><br>
-                    ${item.topping ? `<small>Topping: ${item.topping.name} - ${formatCurrency(item.topping.price)}</small>` : ''}
                 </div>
                 <div>
-                    <i class="fas fa-minus-circle decrease-quantity text-secondary" data-product-id="${item.id}"></i>
-                    <i class="fas fa-trash-alt remove-from-cart text-danger" data-product-id="${item.id}"></i>
-                    <i class="fas fa-plus-circle increase-quantity text-success" data-product-id="${item.id}"></i>
+                    <i class="fas fa-minus-circle decrease-quantity text-secondary" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
+                    <i class="fas fa-trash-alt remove-from-cart text-danger" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
+                    <i class="fas fa-plus-circle increase-quantity text-success" data-product-price="${item.price}" data-product-name="${item.name}" data-product-id="${item.id}"></i>
                 </div>
             </li>
         `);
@@ -757,7 +810,7 @@
 
             if (customerName && customerPhone && cart.length > 0) {
                 // Hiển thị loading spinner
-                $('#loading-spinner').show();
+                showLoading()
                 // Gửi dữ liệu giỏ hàng đến backend
                 $.ajax({
                     url: "{{ route('orders.store') }}",
@@ -772,7 +825,7 @@
                     },
                     success: function(response) {
                         // Ẩn loading spinner
-                        $('#loading-spinner').hide();
+                        hideLoading()
 
                         // Xóa giỏ hàng sau khi thanh toán
                         localStorage.removeItem('cart');
@@ -784,12 +837,12 @@
                             window.location.href = `/orders/print/${response.order_id}`;
                         } else {
                             // Nếu chưa đăng nhập, chuyển đến trang thông báo đơn hàng thành công
-                            window.location.href = '/order-success';  // Đổi thành URL của trang thông báo đơn hàng thành công
+                            window.location.href = `/order-success/${response.order_id}`;  // Đổi thành URL của trang thông báo đơn hàng thành công
                         }
                     },
                     error: function(xhr) {
                         // Ẩn loading spinner
-                        $('#loading-spinner').hide();
+                        hideLoading()
                         alert('Đã xảy ra lỗi! Vui lòng thử lại.');
                     }
                 });
@@ -798,5 +851,13 @@
             }
         });
 
+        // Hàm hiển thị popup
+        function showCartPopup() {
+            const popup = $('#cart-popup');
+            popup.fadeIn(300); // Hiển thị popup với hiệu ứng fade in
+            setTimeout(() => {
+                popup.fadeOut(300); // Ẩn popup sau 2 giây
+            }, 2000); // Thời gian hiển thị là 2 giây
+        }
     </script>
 @endsection

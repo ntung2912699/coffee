@@ -2,10 +2,29 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">THANH TOÁN ĐƠN HÀNG</h5>
-        <a href="{{ route('welcome') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-user-alt fa-sm text-white-50"></i> Quay Về Trang Order
-        </a>
+        @if (auth()->check())
+            <div class="dropdown">
+                <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-alt fa-sm text-white-50"></i> {{ auth()->user()->name }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
+            </a>
+        @endif
+        <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
+            <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> CHI TIẾT ĐƠN HÀNG
+        </h5>
     </div>
     <div class="container" style="max-width: 700px" id="invoice">
         <div class="invoice-header text-center">
@@ -50,28 +69,49 @@
 
         <div class="text-center mt-4">
             <h4>Quét mã QR để thanh toán</h4>
-{{--            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="200">--}}
             <img src="{{ asset($qrCodePath) }}" alt="QR Code" />
         </div>
 
         <div class="print-button text-center mt-3">
-           <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
-               @csrf
-               <a href="{{ route('orders.printReceipt', ['id' => $order->id]) }}" class="btn btn-primary">In Hóa Đơn</a>
-               @if ($order->status == 'pending')
-               <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
-               @else
-               <button type="submit" class="btn btn-outline-danger" style="display:none;">Huỷ Đơn Hàng</button>
-               @endif
-           </form>
+            <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
+                @csrf
+                <a href="#" class="btn btn-primary" onclick="openPrintPopup()"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                @if ($order->status == 'pending')
+                    <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
+                @else
+                    <button type="submit" class="btn btn-outline-danger" style="display:none;">Huỷ Đơn Hàng</button>
+                @endif
+            </form>
         </div>
     </div>
 
     <style>
         @media print {
-            .print-button {
-                display: none; /* Ẩn nút in */
+            .print-button, /* Ẩn nút in */
+            .dropdown, /* Ẩn dropdown */
+            .invoice-info, /* Ẩn thông tin chi tiết */
+            .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
+            {
+                display: none !important;
             }
         }
     </style>
+
+    <script>
+        function openPrintPopup() {
+            // Ẩn các phần không cần thiết
+            var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .invoice-info, .d-sm-flex.align-items-center.justify-content-between.mb-4');
+            elementsToHide.forEach(function(element) {
+                element.style.display = 'none';
+            });
+
+            // Mở cửa sổ in
+            window.print();
+
+            // Sau khi in, hiển thị lại các phần tử đã ẩn
+            elementsToHide.forEach(function(element) {
+                element.style.display = '';
+            });
+        }
+    </script>
 @endsection

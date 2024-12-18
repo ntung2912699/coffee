@@ -30,4 +30,28 @@ return new class extends Migration
         // Xoá dữ liệu đã thêm trong hàm up()
         DB::statement("DELETE FROM \"users\" WHERE \"id\" = '1'");
     }
+
+//    /**
+//     * Run the migrations.
+//     *
+//     * @return void
+//     */
+//    public function up()
+//    {
+//        DB::statement("
+//        INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`)
+//        VALUES ('1', 'ADMIN COFFEE GIÓ', 'admincoffeegio@gmail.com', NULL, '$2y$12$5t12q7G8inkSDtmYrhWMp.n7bdZ03hsKhak4DRcOnB0jwo6fudx/W', NULL, NOW(), NOW())
+//    ");
+//    }
+//
+//    /**
+//     * Reverse the migrations.
+//     *
+//     * @return void
+//     */
+//    public function down()
+//    {
+//        // Xoá dữ liệu đã thêm trong hàm up()
+//        DB::statement("DELETE FROM `users` WHERE `id` = '1'");
+//    }
 };

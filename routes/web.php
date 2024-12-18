@@ -3,16 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/admin/index', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.index');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
 
     Route::get('/admin/category-index', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.category-index');
     Route::post('/admin/category-store', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('admin.category-store');
@@ -34,8 +30,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('welcome');
 Route::get('/categories/{id}/products', [\App\Http\Controllers\HomeController::class, 'getProductsByCategory'])->name('product-by-category');
 Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'storeOrder'])->name('orders.store');
-Route::post('/order-success', [\App\Http\Controllers\Admin\OrderController::class, 'delete'])->name('orders.success');
-Route::get('/order/{id}', [\App\Http\Controllers\HomeController::class, 'showOrder'])->name('orders.show');
+Route::get('/order-success/{id}', [\App\Http\Controllers\HomeController::class, 'orderSuccess'])->name('orders.success');
+Route::get('/order/{id}', [\App\Http\Controllers\HomeController::class, 'show'])->name('orders.show');
+Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getOptions'])->name('product-options.show');
+
 
 
 require __DIR__.'/auth.php';

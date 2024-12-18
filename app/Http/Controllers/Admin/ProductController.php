@@ -76,33 +76,17 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'category_id' => 'required|exists:category,id',
             'description' => 'nullable|max:1000',
-            'options' => 'nullable|array',
-            'options.*.attribute_name' => 'required|string',
-            'options.*.attribute_value' => 'required|string',
-            'options.*.price' => 'nullable|numeric',
         ]);
 
         try {
 
             // Create the product
-            $product = $this->productRepository->create([
+            $this->productRepository->create([
                 'name' => $request->name,
                 'category_id' => $request->category_id,
                 'price' => $formattedDecimalPrice,
                 'description' => $request->description,
             ]);
-
-            // Check if options are provided
-            if ($request->has('options')) {
-                foreach ($request->options as $option) {
-                    $this->productOptionRepository->create([
-                        'product_id' => $product->id,
-                        'attribute_name' => $option['attribute_name'],
-                        'attribute_value' => $option['attribute_value'],
-                        'price' => $option['price'],  // optional price for each option
-                    ]);
-                }
-            }
             return redirect()->route('admin.product-index')->with('success', 'Thêm sản phẩm thành công!');
         } catch (\Exception $exception) {
             return redirect()->route('admin.product-index')->with('error', 'Lỗi khi thêm sản phẩm: ' . $exception->getMessage());
@@ -139,26 +123,6 @@ class ProductController extends Controller
                 'price' => $formattedDecimalPrice,
                 'description' => $request->get('description'),
             ]);
-
-            // Xử lý các option
-            $newOptions = $request->get('options', []);
-
-            // Nếu có các tùy chọn mới
-            if (!empty($newOptions)) {
-                // Lấy danh sách các option ID hiện tại từ database và xóa chúng
-                $this->productOptionRepository->deleteByProductId($id);
-
-                // Lặp qua các tùy chọn mới để thêm vào cơ sở dữ liệu
-                foreach ($newOptions as $newOption) {
-                    // Thêm các tùy chọn mới vào bảng sản phẩm options
-                    $this->productOptionRepository->create([
-                        'product_id' => $id,
-                        'attribute_name' => $newOption['attribute_name'],  // Tên thuộc tính
-                        'attribute_value' => $newOption['attribute_value'], // Giá trị của thuộc tính
-                        'price' => isset($newOption['price']) ? $newOption['price'] : null, // Giá (nếu có)
-                    ]);
-                }
-            }
 
             return redirect()->route('admin.product-index')->with('success', 'Sản phẩm đã được cập nhật!');
         } catch (\Exception $e) {

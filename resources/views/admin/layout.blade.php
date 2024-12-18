@@ -14,13 +14,47 @@
             <!-- Main Content -->
             <div id="content">
                 <style>
+                    /*#loading-spinner {*/
+                    /*    display: none; !* Ban đầu ẩn *!*/
+                    /*    position: fixed;*/
+                    /*    top: 50%;*/
+                    /*    left: 50%;*/
+                    /*    transform: translate(-50%, -50%);*/
+                    /*    z-index: 9999;*/
+                    /*}*/
+
+                    /*.spinner {*/
+                    /*    border: 4px solid #f3f3f3; !* Màu nền *!*/
+                    /*    border-top: 4px solid #3498db; !* Màu spinner *!*/
+                    /*    border-radius: 50%;*/
+                    /*    width: 50px;*/
+                    /*    height: 50px;*/
+                    /*    animation: spin 2s linear infinite;*/
+                    /*}*/
+
+                    /*@keyframes spin {*/
+                    /*    0% { transform: rotate(0deg); }*/
+                    /*    100% { transform: rotate(360deg); }*/
+                    /*}*/
+
+                    #loading-overlay {
+                        display: none; /* Ban đầu ẩn */
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+                        z-index: 9998; /* Nền nằm dưới spinner */
+                    }
+
                     #loading-spinner {
                         display: none; /* Ban đầu ẩn */
                         position: fixed;
                         top: 50%;
                         left: 50%;
                         transform: translate(-50%, -50%);
-                        z-index: 9999;
+                        z-index: 9999; /* Spinner nằm trên overlay */
                     }
 
                     .spinner {
@@ -36,8 +70,10 @@
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }
                     }
+
                 </style>
                 <!-- Thêm phần tử loading bên dưới nút thanh toán -->
+                <div id="loading-overlay"></div>
                 <div id="loading-spinner" style="display: none;">
                     <div class="spinner"></div> <!-- Có thể thay đổi bằng icon bạn muốn -->
                 </div>
@@ -113,6 +149,17 @@
             </div>
         </div>
     </div>
+    <script>
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'block';
+            document.getElementById('loading-spinner').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

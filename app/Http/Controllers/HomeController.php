@@ -10,6 +10,7 @@ use App\Repositories\Order\OrderRepository;
 use App\Repositories\Product\ProductRepository;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
@@ -79,7 +80,7 @@ class HomeController extends Controller
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'items.*.topping' => 'nullable|array',
+            'items.*.options' => 'string',
             'total' => 'required|numeric|min:0',
         ]);
         // Lưu đơn hàng vào bảng `orders`
@@ -100,7 +101,7 @@ class HomeController extends Controller
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
                 'total_price' => $totalItemPrice, // Lưu tổng tiền
-                'attributes' => !empty($item['topping'])?$item['topping']['name']:'', // Lưu tổng tiền
+                'attributes' => $item['options'], // thuộc tính
             ]);
         }
 
@@ -245,4 +246,28 @@ class HomeController extends Controller
 
         return response()->json($products);
     }
+
+    /**
+     * @param $productId
+     * @return mixed
+     *
+     */
+    public function getOptions()
+    {
+        $options = DB::table('product_option')
+            ->select('attribute_name', 'attribute_value', 'price')
+            ->get()
+            ->groupBy('attribute_name');
+
+        return response()->json($options);
+    }
+
+    /**
+     * @return \Illuminate\Container\Container|mixed|object
+     */
+    public function orderSuccess($id){
+        $order = $this->orderRepository->find($id);
+        return view('admin.page.order_success', compact('order'));
+    }
+
 }

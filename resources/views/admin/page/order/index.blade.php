@@ -4,13 +4,31 @@
 @section('content')
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">
-                <a href="{{ route('admin.index') }}"><i class="fas fa-arrow-circle-left"></i></a> ĐƠN HÀNG
+        @if (auth()->check())
+            <!-- Dropdown khi đăng nhập -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-alt fa-sm text-white-50"></i> {{ auth()->user()->name }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+        @else
+            <!-- Nút hiển thị mặc định nếu chưa đăng nhập -->
+                <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                    <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
+                </a>
+            @endif
+            <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH ĐƠN HÀNG
             </h5>
-            <a href="#" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#productModal">
-                <i class="fas fa-plus"></i>
-                Thêm Sản Phẩm Mới
-            </a>
         </div>
         <div class="table-responsive">
             <table class="table">

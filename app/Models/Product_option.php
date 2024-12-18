@@ -14,12 +14,6 @@ class Product_option extends Model
 
     // Các thuộc tính có thể mass assign
     protected $fillable = [
-        'product_id', 'attribute_name', 'attribute_value', 'price'
+        'attribute_name', 'attribute_value', 'price'
     ];
-
-    // Mối quan hệ với Product
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 }

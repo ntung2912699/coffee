@@ -16,12 +16,6 @@ class Product extends Model
         'name', 'category_id', 'description', 'price', 'image_url'
     ];
 
-    // Mối quan hệ với ProductAttribute
-    public function attributes()
-    {
-        return $this->hasMany(Product_option::class);
-    }
-
     // Mối quan hệ với OrderItem (một sản phẩm có thể nằm trong nhiều đơn hàng)
     public function orderItems()
     {

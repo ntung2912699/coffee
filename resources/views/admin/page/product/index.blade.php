@@ -4,13 +4,35 @@
 @section('content')
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h5 class="h5 mb-0 text-gray-800"><img src="{{ asset('assets/logo/logo-gio.png') }}" style="width: 150px; height: 150px">
-                <a href="{{ route('admin.index') }}"><i class="fas fa-arrow-circle-left"></i></a> SẢN PHẨM
+            @if (auth()->check())
+                <!-- Dropdown khi đăng nhập -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-alt fa-sm text-white-50"></i> {{ auth()->user()->name }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+            @else
+            <!-- Nút hiển thị mặc định nếu chưa đăng nhập -->
+                <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                    <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
+                </a>
+            @endif
+            <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH SÁCH SẢN PHẨM
+                <button class="btn btn-sm btn-outline-primary text-primary d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#productModal">
+                    <i class="fas fa-plus"></i>
+                    Thêm Mới
+                </button>
             </h5>
-            <a href="#" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#productModal">
-                <i class="fas fa-plus"></i>
-                Thêm Sản Phẩm Mới
-            </a>
         </div>
 
         <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModal" aria-hidden="true">
@@ -46,15 +68,6 @@
                                 <label for="description" class="form-label">Mô Tả</label>
                                 <input type="text" class="form-control form-control-user" name="description" id="description" placeholder="Mô Tả">
                             </div>
-
-                            <label for="option" class="form-label">Tùy Chọn</label>
-                            <div id="additional-options">
-                                <!-- Option inputs will be added here -->
-                            </div>
-
-                            <button type="button" class="btn btn-outline-info" id="addOptionBtn">
-                                <i class="fas fa-plus"></i> Thêm Tùy Chọn
-                            </button>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -86,13 +99,6 @@
                             <td>{{ $product->category->name }}</td>
                             <td>
                                 {{ $product->name }}
-                                @if(count($product->attributes) > 0)
-                                    [
-                                    @foreach($product->attributes as $index => $item)
-                                        {{ $item->attribute_value }}@if($index < count($product->attributes) - 1), @endif
-                                    @endforeach
-                                    ]
-                                @endif
                             </td>
                             <td>{{ $product->price }}</td>
                             <td>{{ $product->description }}</td>
@@ -107,8 +113,7 @@
                                             data-name="{{ $product->name }}"
                                             data-category-id="{{ $product->category_id }}"
                                             data-price="{{ $product->price }}"
-                                            data-description="{{ $product->description }}"
-                                            data-options="{{ json_encode($product->attributes) }}">
+                                            data-description="{{ $product->description }}">
                                         <i class="text-info fas fa-pen-alt"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $product->id }}">
@@ -157,13 +162,6 @@
                             <label for="description" class="form-label">Mô Tả</label>
                             <input type="text" class="form-control form-control-user" name="description" id="description" placeholder="Mô Tả">
                         </div>
-
-                        <div id="optionsContainerEdit">
-                            <!-- Các input option sẽ được thêm vào đây khi sửa sản phẩm -->
-                        </div>
-                        <button type="button" id="addOptionBtnEdit" class="btn btn-outline-info">
-                            <i class="fas fa-plus"></i> Thêm Tùy Chọn
-                        </button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -178,89 +176,25 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <script type="text/javascript">
+        // Khi nhấn vào nút sửa
         $(document).ready(function () {
             // Khi nhấn vào nút sửa
-            $(document).ready(function () {
-                // Khi nhấn vào nút sửa
-                $('.edit-product-btn').on('click', function () {
-                    const productId = $(this).data('id');
-                    const productName = $(this).data('name');
-                    const productCategoryId = $(this).data('category-id');
-                    const productPrice = $(this).data('price');
-                    const productDescription = $(this).data('description');
-                    const productOptions = $(this).data('options') || []; // Các tùy chọn trước đó, nếu có
+            $('.edit-product-btn').on('click', function () {
+                const productId = $(this).data('id');
+                const productName = $(this).data('name');
+                const productCategoryId = $(this).data('category-id');
+                const productPrice = $(this).data('price');
+                const productDescription = $(this).data('description');
+                const productOptions = $(this).data('options') || []; // Các tùy chọn trước đó, nếu có
 
-                    // Điền thông tin vào các trường của modal
-                    $('#productEditModal #name').val(productName);
-                    $('#productEditModal #category_id').val(productCategoryId);
-                    $('#productEditModal #price').val(productPrice);
-                    $('#productEditModal #description').val(productDescription);
+                // Điền thông tin vào các trường của modal
+                $('#productEditModal #name').val(productName);
+                $('#productEditModal #category_id').val(productCategoryId);
+                $('#productEditModal #price').val(productPrice);
+                $('#productEditModal #description').val(productDescription);
 
-                    // Cập nhật action của form để gửi đúng sản phẩm
-                    $('#productEditModal form').attr('action', '/admin/product-update/' + productId);
-
-                    // Thêm các option động nếu có (nếu đã có tùy chọn trước đó)
-                    $('#optionsContainerEdit').empty(); // Xóa các tùy chọn cũ
-
-                    // Duyệt qua các tùy chọn và hiển thị chúng
-                    productOptions.forEach(function(option, index) {
-                        $('#optionsContainerEdit').append(`
-                <div class="form-group d-flex align-items-center mb-2" id="option${index}">
-                    <input type="text" class="form-control" name="options[${index}][attribute_name]" value="${option.attribute_name}" placeholder="Tên">
-                    <input type="text" class="form-control ms-2" name="options[${index}][attribute_value]" value="${option.attribute_value}" placeholder="Giá Trị">
-                    <input type="text" class="form-control ms-2" name="options[${index}][price]" value="${option.price}" placeholder="Giá Tùy">
-                    <button type="button" class="btn btn-outline-danger ms-2 removeOptionBtn" data-index="${index}">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `);
-                    });
-                });
-
-                // Thêm tùy chọn mới trong modal
-                $("#addOptionBtnEdit").on("click", function() {
-                    var optionCount = $("#optionsContainerEdit .form-group").length;
-                    var newOption = `
-            <div class="form-group d-flex align-items-center mb-2" id="option${optionCount}">
-                <input type="text" class="form-control" name="options[${optionCount}][attribute_name]" placeholder="Tên">
-                <input type="text" class="form-control ms-2" name="options[${optionCount}][attribute_value]" placeholder="Giá Trị">
-                <input type="text" class="form-control ms-2" name="options[${optionCount}][price]" placeholder="Giá Tùy">
-                <button type="button" class="btn btn-outline-danger ms-2 removeOptionBtn" data-index="${optionCount}">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-                    $("#optionsContainerEdit").append(newOption);
-                });
-
-                // Xóa tùy chọn
-                $(document).on('click', '.removeOptionBtn', function() {
-                    const index = $(this).data('index');
-                    $(`#option${index}`).remove(); // Xóa option
-                });
-            });
-
-
-            $("#addOptionBtn").on("click", function() {
-                var optionCount = $("#additional-options .form-group").length;
-                var newOption = `
-                <div class="form-group d-flex align-items-center mb-2" id="option${optionCount}">
-                    <input type="text" class="form-control" name="options[${optionCount}][attribute_name]" placeholder="Tên">
-                    <input type="text" class="form-control ms-2" name="options[${optionCount}][attribute_value]" placeholder="Giá Trị">
-                    <input type="text" class="form-control ms-2" name="options[${optionCount}][price]" placeholder="Giá Tùy">
-                    <button type="button" class="btn btn-outline-danger ms-2 remove-option">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-                        $("#additional-options").append(newOption);
-                    });
-
-
-            // Sử dụng event delegation để gắn sự kiện xóa cho các nút xóa dynamically added
-            $(document).on('click', '.removeOptionBtn', function() {
-                const index = $(this).data('index');
-                $(`#option${index}`).remove(); // Xóa option
+                // Cập nhật action của form để gửi đúng sản phẩm
+                $('#productEditModal form').attr('action', '/admin/product-update/' + productId);
             });
         });
 
@@ -386,29 +320,6 @@
                 });
             });
         });
-
-        // $(document).ready(function() {
-        //     // Khi nhấn vào biểu tượng "+"
-        //     $("#addOptionBtn").on("click", function() {
-        //         // Tạo một input mới với nút xóa
-        //         var newOption = `
-        //     <div class="form-group d-flex align-items-center mb-2" class="input-option">
-        //         <input type="text" class="form-control form-control-user" name="options[]" placeholder="Tùy Chọn">
-        //         <button type="button" class="btn btn-outline-danger ms-2 remove-option">
-        //             <i class="fas fa-times"></i>
-        //         </button>
-        //     </div>
-        // `;
-        //
-        //         // Thêm input mới vào div #additional-options
-        //         $("#additional-options").append(newOption);
-        //     });
-        //
-        //     // Khi nhấn vào nút "Xóa", xóa input option
-        //     $(document).on("click", ".remove-option", function() {
-        //         $(this).closest(".form-group").remove();
-        //     });
-        // });
 
     </script>
 @endsection
