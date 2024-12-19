@@ -609,6 +609,8 @@
             // Thêm sản phẩm vào giỏ hàng
             addProductToCart(selectedProductId, finalProductName, finalProductPrice, finalOptionName);
 
+            $('.option-checkbox').prop('checked', false);
+            
             // Đóng modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('product-options-modal'));
             modal.hide();
