@@ -582,34 +582,9 @@
             // Cập nhật tiêu đề modal
             $('#product-modal-title').text(`Tùy chọn cho sản phẩm: ${productName}`);
 
-            // Fetch product options từ API
-            $.getJSON(`/product-options`, function (options) {
-                const $modalContainer = $('#product-options-container');
-                $modalContainer.empty(); // Xóa nội dung cũ
-
-                // Tạo giao diện checkbox cho từng nhóm tùy chọn
-                $.each(options, function (attributeName, attributes) {
-                    const $groupDiv = $('<div>', { class: 'option-group' });
-                    $groupDiv.append(`<h5><b>${attributeName}</b></h5>`);
-
-                    $.each(attributes, function (index, option) {
-                        const optionHTML = `
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input option-checkbox" id="option-${option.attribute_value}" data-price="${option.price}" value="${option.attribute_value}">
-                        <label class="form-check-label" for="option-${option.attribute_value}">
-                            ${option.attribute_value} (${Number(option.price).toLocaleString()} VNĐ)
-                        </label>
-                    </div>`;
-                        $groupDiv.append(optionHTML);
-                    });
-
-                    $modalContainer.append($groupDiv);
-                });
-
-                // Hiển thị modal
-                const modal = new bootstrap.Modal(document.getElementById('product-options-modal'));
-                modal.show();
-            });
+            // Hiển thị modal
+            const modal = new bootstrap.Modal(document.getElementById('product-options-modal'));
+            modal.show();
         });
 
         // Xử lý khi người dùng nhấn nút xác nhận trong modal
@@ -634,6 +609,8 @@
             // Thêm sản phẩm vào giỏ hàng
             addProductToCart(selectedProductId, finalProductName, finalProductPrice, finalOptionName);
 
+            $('.option-checkbox').prop('checked', false);
+            
             // Đóng modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('product-options-modal'));
             modal.hide();
@@ -749,6 +726,30 @@
 
         // Tải lại giỏ hàng từ localStorage khi trang được load
         $(document).ready(function () {
+            // Fetch product options từ API
+            $.getJSON(`/product-options`, function (options) {
+                const $modalContainer = $('#product-options-container');
+                $modalContainer.empty(); // Xóa nội dung cũ
+
+                // Tạo giao diện checkbox cho từng nhóm tùy chọn
+                $.each(options, function (attributeName, attributes) {
+                    const $groupDiv = $('<div>', { class: 'option-group' });
+                    $groupDiv.append(`<h5><b>${attributeName}</b></h5>`);
+
+                    $.each(attributes, function (index, option) {
+                        const optionHTML = `
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input option-checkbox" id="option-${option.attribute_value}" data-price="${option.price}" value="${option.attribute_value}">
+                        <label class="form-check-label" for="option-${option.attribute_value}">
+                            ${option.attribute_value} (${Number(option.price).toLocaleString()} VNĐ)
+                        </label>
+                    </div>`;
+                        $groupDiv.append(optionHTML);
+                    });
+
+                    $modalContainer.append($groupDiv);
+                });
+            });
             updateCart();
         });
 
