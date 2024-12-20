@@ -284,4 +284,31 @@ class HomeController extends Controller
         return response()->json($products);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getProductAttributes($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Tách chuỗi attribute_name thành mảng
+        $attributes = $product->attribute_name ? explode(',', $product->attribute_name) : [];
+
+        return response()->json($attributes);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProductOptions()
+    {
+        $options = DB::table('product_option')
+            ->select('attribute_name', 'attribute_value', 'price')
+            ->get()
+            ->groupBy('attribute_name');
+
+        return response()->json($options);
+    }
+
 }

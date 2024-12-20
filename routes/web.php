@@ -32,8 +32,10 @@ Route::get('/categories/{id}/products', [\App\Http\Controllers\HomeController::c
 Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'storeOrder'])->name('orders.store');
 Route::get('/order-success/{id}', [\App\Http\Controllers\HomeController::class, 'orderSuccess'])->name('orders.success');
 Route::get('/order/{id}', [\App\Http\Controllers\HomeController::class, 'show'])->name('orders.show');
-Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getOptions'])->name('product-options.show');
 Route::get('/search-products', [\App\Http\Controllers\HomeController::class, 'searchProducts'])->name('product-search');
+Route::get('/product/{id}/attributes', [\App\Http\Controllers\HomeController::class, 'getProductAttributes']);
+Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getProductOptions']);
+
 
 
 
