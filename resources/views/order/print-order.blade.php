@@ -2,6 +2,15 @@
 
 @section('content')
     <style>
+        i {
+            color: white !important;
+        }
+
+        b, strong {
+            font-weight: 700 !important;
+        }
+    </style>
+    <style>
         @media print {
     body {
         font-family: Arial, sans-serif;
@@ -63,7 +72,7 @@
             </a>
         @endif
         <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-            <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> CHI TIẾT ĐƠN HÀNG
+            <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> CHI TIẾT ĐƠN HÀNG
         </h5>
     </div>
     <div class="container" style="max-width: 700px" id="invoice">
@@ -115,7 +124,7 @@
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
-                <a href="#" onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                <a onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
                     <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
                 @else

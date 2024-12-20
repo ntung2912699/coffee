@@ -1,6 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('admin.component.head')
+<style>
+    body {
+        font-size: 18px !important;
+        font-weight: bold;
+    }
+
+    .form-check-input:checked {
+        background-color: #34495e;
+        border-color: #34495e;
+    }
+
+    /* Thay đổi màu sắc button và dropdown */
+    .btn, .dropdown-menu, .dropdown-item, #checkout-btn, #confirm-order-btn {
+        background-color: #e67e22;
+        color: white !important;
+        /*font-weight: bold;*/
+        /*font-size: 16px; !* Tăng kích thước font *!*/
+        border: none;
+        /*transition: background-color 0.3s ease;*/
+        border-radius: 15px;
+    }
+
+    .btn:hover, .dropdown-item:hover, #checkout-btn:hover, #confirm-order-btn:hover {
+        background-color: #34495e; /* Màu xanh đậm khi hover */
+        color: white;
+    }
+
+    .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+        background-color: #34495e !important; /* Màu xanh đậm khi hover */
+        color: white !important;
+    }
+
+    i {
+        color: #e67e22 !important;
+    }
+
+    /* Thay đổi màu sắc dropdown khi mở */
+    .dropdown-menu {
+        background-color: #e67e22;
+        border: none;
+    }
+
+    /*!* Chỉnh sửa font chữ *!*/
+    h1, h2, h3, h4, h5, h6, .card-title, .lead, .form-label, .btn p{
+        font-family: 'Arial', sans-serif; /* Hoặc font chữ bất kỳ bạn muốn */
+        font-weight: 600; /* Làm đậm chữ */
+    }
+
+    /* Thay đổi màu cho các phần tử có class "active" trong dropdown */
+    .dropdown-menu .active, .category-item.active {
+        background-color: #34495e;
+        color: white;
+        border: none;
+    }
+</style>
 <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -14,6 +69,7 @@
             <!-- Main Content -->
             <div id="content">
                 <style>
+
                     /*#loading-spinner {*/
                     /*    display: none; !* Ban đầu ẩn *!*/
                     /*    position: fixed;*/

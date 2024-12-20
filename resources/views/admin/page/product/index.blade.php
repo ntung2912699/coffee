@@ -2,6 +2,11 @@
 
 
 @section('content')
+    <style>
+        i {
+            color: white !important;
+        }
+    </style>
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             @if (auth()->check())
@@ -27,7 +32,7 @@
                 </a>
             @endif
             <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH SÁCH SẢN PHẨM
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> DANH SÁCH SẢN PHẨM
                 <button class="btn btn-sm btn-outline-primary text-primary d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#productModal">
                     <i class="fas fa-plus"></i>
                     Thêm Mới
@@ -127,7 +132,7 @@
                                             data-price="{{ $product->price }}"
                                             data-description="{{ $product->description }}"
                                             data-attribute-name="{{ $product->attribute_name }}">
-                                        <i class="text-info fas fa-pen-alt"></i>
+                                        <i class="fas fa-pen-alt"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $product->id }}">
                                         <i class="fas fa-trash-alt"></i>

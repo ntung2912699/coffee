@@ -1,6 +1,11 @@
 @extends('admin.layout')
 
 @section('content')
+    <style>
+        i {
+            color: white !important;
+        }
+    </style>
     <div class="container text-center mt-5">
         <!-- Đoạn thông báo đơn hàng thành công -->
         <div class="alert alert-success">

@@ -7,7 +7,7 @@
             position: fixed;
             bottom: 50px;
             right: 20px;
-            background-color: #28a745;
+            background-color: #e67e22 !important;
             color: white;
             border-radius: 50%;
             width: 50px;
@@ -17,6 +17,10 @@
             z-index: 1000;
             font-size: 25px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-icon i {
+            color: white !important;
         }
 
         /* Số lượng sản phẩm trong giỏ */
@@ -233,22 +237,22 @@
             <div class="info-shop col-md-6 col-sm-12">
                 <section class="text-left" style="background: #ffffff">
                     <h2>COFFE GIÓ</h2>
-                    <p class="lead text-muted"><i class="fas fa-home"></i> : Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
-                    <p class="lead text-muted"><i class="fas fa-phone"></i> : 0968 251 663</p>
-                    <p class="lead text-muted"><i class="fas fa-clock"></i> : 8:00 AM - 23:30 PM</p>
+                    <p class="lead text-muted" style="color: #34495e"><i class="fas fa-home"></i> : Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
+                    <p class="lead text-muted" style="color: #34495e"><i class="fas fa-phone"></i> : 0968 251 663</p>
+                    <p class="lead text-muted" style="color: #34495e"><i class="fas fa-clock"></i> : 8:00 AM - 23:30 PM</p>
 
                     @if (auth()->check())
                         <!-- Dropdown khi đăng nhập -->
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user-alt fa-sm text-white-50"></i> {{ auth()->user()->name }}
+                                    <i class="fas fa-user-alt fa-sm text-white-50" style="color: #ffffff !important;"></i> {{ auth()->user()->name }}
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-cog"></i> Quản Lý Cửa Hàng</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-cog" style="color: #ffffff !important;"></i> Quản Lý Cửa Hàng</a></li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
-                                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt" style="color: #ffffff !important;"></i> Logout</button>
                                         </form>
                                     </li>
                                 </ul>
@@ -256,14 +260,14 @@
                     @else
                     <!-- Nút hiển thị mặc định nếu chưa đăng nhập -->
                         <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                            <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
+                            <i class="fas fa-sign-in-alt fa-sm text-white-50" style="color: #ffffff !important;"></i> Đăng Nhập
                         </a>
                     @endif
                 </section>
             </div>
         </div>
         <div class="d-sm-flex align-items-center justify-content-between mb-4" style="margin-top: 30px">
-            <h5 class="h5 mb-0 text-primary text-800"><i class="fas fa-shopping-bag"></i> MÀN HÌNH ORDER</h5>
+            <h5 class="h5 mb-0 text-800" style="color: #34495e"><i class="fas fa-shopping-bag"></i> MÀN HÌNH ORDER</h5>
             <div class="cart-icon" id="cart-icon">
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cart-count" class="badge badge-danger">0</span>
@@ -318,7 +322,7 @@
                                            onkeyup="searchProductOnEnter(event)">
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-primary" type="button" onclick="searchProductOnClick()">
-                                            <i class="fas fa-search"></i>
+                                            <i class="fas fa-search" style="color: #ffffff !important;"></i>
                                         </button>
                                     </div>
                                 </div>
