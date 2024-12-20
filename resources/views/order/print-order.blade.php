@@ -1,6 +1,27 @@
 @extends('admin.layout')
 
 @section('content')
+    <style>
+        @media print {
+            body {
+                font-family: Arial, sans-serif;
+                color: black;
+            }
+
+            /* Ẩn các phần tử không cần thiết khi in */
+            .no-print {
+                display: none;
+            }
+
+            /* Cải thiện bố cục cho trang in */
+            .invoice {
+                width: 100%;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+        }
+
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         @if (auth()->check())
             <div class="dropdown">
@@ -75,7 +96,7 @@
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
-                <a href="{{ route('orders.printReceipt', ['id' => $order->id]) }}" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                <a href="#" onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
                     <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
                 @else
@@ -113,5 +134,21 @@
                 element.style.display = '';
             });
         }
+
+        function printInvoice() {
+            // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
+            var printContents = document.getElementById('invoice').innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            // Thay đổi nội dung trang web trước khi in
+            document.body.innerHTML = printContents;
+
+            // Gọi chức năng in của trình duyệt
+            window.print();
+
+            // Khôi phục lại nội dung ban đầu của trang sau khi in
+            document.body.innerHTML = originalContents;
+        }
+
     </script>
 @endsection
