@@ -37,12 +37,12 @@
         }
 
         .category-list {
-            max-height: 760px;
+            /*max-height: 760px;*/
             overflow-y: auto;
         }
 
         .product-list {
-            max-height: 760px;
+            /*max-height: 760px;*/
             overflow-y: auto;
         }
 
@@ -366,21 +366,39 @@
                             <strong>Tổng tiền:</strong>
                             <span class="font-weight-bold" id="total-price">0 VNĐ</span>
                         </div>
-                        <p style="margin-top: 20px">THÔNG TIN KHÁCH HÀNG</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="customer-name" class="form-label">Tên khách</label>
-                                <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
+                        @if(auth()->check())
+                            <p style="margin-top: 20px" hidden>THÔNG TIN KHÁCH HÀNG</p>
+                            <div class="row" hidden>
+                                <div class="col-md-6">
+                                    <label for="customer-name" class="form-label">Tên khách</label>
+                                    <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="customer-phone" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="customer-address" class="form-label">Địa Chỉ</label>
+                                    <input type="text" class="form-control customer-address" id="customer-address-left" placeholder="Nhập địa chỉ">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="customer-phone" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
+                        @else
+                            <p style="margin-top: 20px">THÔNG TIN KHÁCH HÀNG</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="customer-name" class="form-label">Tên khách</label>
+                                    <input type="text" class="form-control customer-name" id="customer-name-left" placeholder="Nhập tên khách">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="customer-phone" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control customer-phone" id="customer-phone-left" placeholder="Nhập số điện thoại">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="customer-address" class="form-label">Địa Chỉ</label>
+                                    <input type="text" class="form-control customer-address" id="customer-address-left" placeholder="Nhập địa chỉ">
+                                </div>
                             </div>
-                            <div class="col-md-12">
-                                <label for="customer-address" class="form-label">Địa Chỉ</label>
-                                <input type="text" class="form-control customer-address" id="customer-address-left" placeholder="Nhập địa chỉ">
-                            </div>
-                        </div>
+                        @endif
                         <button class="btn btn-primary mt-3 checkout-btn" id="checkout-btn">Đặt Hàng</button>
                     </div>
                 </div>
@@ -423,6 +441,25 @@
                     <strong>Tổng tiền: <span id="total-price-sidebar">0 VNĐ</span></strong>
 
                     <!-- Form Thông Tin Khách Hàng -->
+                    @if(auth()->check())
+                    <form id="customer-info-form" class="mt-3">
+                        <div class="form-group" hidden>
+                            <label for="customer-name">Tên Khách</label>
+                            <input type="text" class="form-control" id="customer-name" placeholder="Nhập họ và tên" required>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label for="customer-phone">Số Điện Thoại</label>
+                            <input type="text" class="form-control" id="customer-phone" placeholder="Nhập số điện thoại" required>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label for="customer-address">Địa Chỉ</label>
+                            <input type="text" class="form-control" id="customer-address" placeholder="Nhập địa chỉ" required>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block mt-2" id="confirm-order-btn">
+                            Xác Nhận Đơn Hàng
+                        </button>
+                    </form>
+                    @else
                     <form id="customer-info-form" class="mt-3">
                         <div class="form-group">
                             <label for="customer-name">Tên Khách</label>
@@ -440,6 +477,7 @@
                             Xác Nhận Đơn Hàng
                         </button>
                     </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -801,7 +839,7 @@
             const customerPhone = $('#customer-phone-left').val();
             const customerAddress = $('#customer-address-left').val();
 
-            if (customerName && customerPhone && cart.length > 0) {
+            if (cart.length > 0) {
                 // Hiển thị loading spinner
                 showLoading()
                 // Gửi dữ liệu giỏ hàng đến backend
@@ -840,7 +878,7 @@
                     }
                 });
             } else {
-                alert('Vui lòng nhập thông tin khách hàng và đảm bảo có sản phẩm trong giỏ!');
+                alert('Vui lòng đảm bảo có sản phẩm trong giỏ!');
             }
         });
 
@@ -929,7 +967,7 @@
             const customerPhone = $('#customer-phone').val();
             const customerAddress = $('#customer-address').val();
 
-            if (customerName && customerPhone && cart.length > 0) {
+            if (cart.length > 0) {
                 // Hiển thị loading spinner
                 showLoading()
                 // Gửi dữ liệu giỏ hàng đến backend
@@ -968,7 +1006,7 @@
                     }
                 });
             } else {
-                alert('Vui lòng nhập thông tin khách hàng và đảm bảo có sản phẩm trong giỏ!');
+                alert('Vui lòng đảm bảo có sản phẩm trong giỏ!');
             }
         });
 
@@ -992,7 +1030,7 @@
                 // Tự động đóng sidebar sau 2 giây
                 setTimeout(() => {
                     sidebar.removeClass('open');
-                }, 3000);
+                }, 1000);
             }
         }
 

@@ -81,7 +81,7 @@ class HomeController extends Controller
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'items.*.options' => 'string',
+            'items.*.options' => 'nullable|string',
             'total' => 'required|numeric|min:0',
         ]);
         // Lưu đơn hàng vào bảng `orders`
@@ -123,27 +123,27 @@ class HomeController extends Controller
     {
         $order = Order::with('items.product')->findOrFail($id);
 
-        // Thông tin thanh toán
-        $bankName = 'MB BANK';
-        $accountNumber = '001099022228';
-
-        // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
-        $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
-
-        // Tạo đối tượng QrCode
-        $qrCode = new QrCode($qrData);
-
-        // Tạo đối tượng Writer
-        $writer = new PngWriter();
-
-        // Lưu mã QR vào file
-        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
-        $writer->write($qrCode)->saveToFile($qrCodePath);
+//        // Thông tin thanh toán
+//        $bankName = 'MB BANK';
+//        $accountNumber = '001099022228';
+//
+//        // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
+//        $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
+//
+//        // Tạo đối tượng QrCode
+//        $qrCode = new QrCode($qrData);
+//
+//        // Tạo đối tượng Writer
+//        $writer = new PngWriter();
+//
+//        // Lưu mã QR vào file
+//        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
+//        $writer->write($qrCode)->saveToFile($qrCodePath);
 
         // Trả về view
         return view('order.print-order', [
             'order' => $order,
-            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
+//            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
         ]);
     }
 
@@ -188,7 +188,7 @@ class HomeController extends Controller
             $printer->text("Tên khách hàng: {$order->customer_name}\n");
             $printer->text("Số điện thoại: {$order->phone_number}\n");
             $printer->text("Địa chỉ: {$order->address}\n");
-            
+
 
             // In các sản phẩm trong đơn hàng
             foreach ($order->items as $item) {
@@ -279,7 +279,7 @@ class HomeController extends Controller
     public function searchProducts(Request $request) {
         $query = $request->input('search');
 
-        $products = Product::where('name', 'LIKE', '%' . strtolower($query) . '%')->get();
+        $products = Product::where('name', 'ILIKE', '%' . $query . '%')->get();
 
         return response()->json($products);
     }

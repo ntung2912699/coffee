@@ -15,12 +15,6 @@ return new class extends Migration
     public function up()
     {
         DB::table('product_option')->insert([
-            // Kích thước (Size)
-            ['attribute_name' => 'Size', 'attribute_value' => 'M', 'price' => 0.00, 'created_at' => now(), 'updated_at' => now()],
-            ['attribute_name' => 'Size', 'attribute_value' => 'L', 'price' => 5000, 'created_at' => now(), 'updated_at' => now()],
-            ['attribute_name' => 'Size', 'attribute_value' => 'XL', 'price' => 10000, 'created_at' => now(), 'updated_at' => now()],
-            ['attribute_name' => 'Size', 'attribute_value' => '2XL', 'price' => 15000, 'created_at' => now(), 'updated_at' => now()],
-
             // Tùy chọn (Customization)
             ['attribute_name' => 'Đá', 'attribute_value' => '100% Đá', 'price' => 0.00, 'created_at' => now(), 'updated_at' => now()],
             ['attribute_name' => 'Đá', 'attribute_value' => '70% Đá', 'price' => 0.00, 'created_at' => now(), 'updated_at' => now()],

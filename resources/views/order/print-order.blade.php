@@ -13,7 +13,7 @@
         font-size: 50px; /* Cỡ chữ cho tiêu đề hóa đơn */
     }
 
-    .invoice-info p, 
+    .invoice-info p,
     .invoice-total h4 {
         font-size: 30px; /* Cỡ chữ cho các thông tin đơn hàng */
     }
@@ -33,7 +33,7 @@
     /* Ẩn các phần tử không cần thiết khi in */
     .print-button, /* Ẩn nút in */
     .dropdown, /* Ẩn dropdown */
-    .invoice-info, /* Ẩn thông tin chi tiết */
+    /*.invoice-info !* Ẩn thông tin chi tiết *!*/
     .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
     {
         display: none !important;
@@ -107,10 +107,10 @@
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
-        <div class="text-center mt-4">
-            <h4>Quét mã QR để thanh toán</h4>
-            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />
-        </div>
+{{--        <div class="text-center mt-4">--}}
+{{--            <h4>Quét mã QR để thanh toán</h4>--}}
+{{--            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />--}}
+{{--        </div>--}}
 
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
@@ -126,48 +126,48 @@
     </div>
 
     <style>
-        @media print {
-            .print-button, /* Ẩn nút in */
-            .dropdown, /* Ẩn dropdown */
-            .invoice-info, /* Ẩn thông tin chi tiết */
-            .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
-            {
-                display: none !important;
-            }
-        }
+        /*@media print {*/
+        /*    .print-button, !* Ẩn nút in *!*/
+        /*    .dropdown, !* Ẩn dropdown *!*/
+        /*    .invoice-info !* Ẩn thông tin chi tiết *!*/
+        /*    !*.d-sm-flex.align-items-center.justify-content-between.mb-4 !* Ẩn tiêu đề *!*!*/
+        /*    {*/
+        /*        display: none !important;*/
+        /*    }*/
+        /*}*/
     </style>
 
     <script>
-        function openPrintPopup() {
-            // Ẩn các phần không cần thiết
-            var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .invoice-info, .d-sm-flex.align-items-center.justify-content-between.mb-4');
-            elementsToHide.forEach(function(element) {
-                element.style.display = 'none';
-            });
-
-            // Mở cửa sổ in
-            window.print();
-
-            // Sau khi in, hiển thị lại các phần tử đã ẩn
-            elementsToHide.forEach(function(element) {
-                element.style.display = '';
-            });
-        }
-
-        function printInvoice() {
-            // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
-            var printContents = document.getElementById('invoice').innerHTML;
-            var originalContents = document.body.innerHTML;
-
-            // Thay đổi nội dung trang web trước khi in
-            document.body.innerHTML = printContents;
-
-            // Gọi chức năng in của trình duyệt
-            window.print();
-
-            // Khôi phục lại nội dung ban đầu của trang sau khi in
-            document.body.innerHTML = originalContents;
-        }
+        // function openPrintPopup() {
+        //     // Ẩn các phần không cần thiết
+        //     var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .invoice-info, .d-sm-flex.align-items-center.justify-content-between.mb-4');
+        //     elementsToHide.forEach(function(element) {
+        //         element.style.display = 'none';
+        //     });
+        //
+        //     // Mở cửa sổ in
+        //     window.print();
+        //
+        //     // Sau khi in, hiển thị lại các phần tử đã ẩn
+        //     elementsToHide.forEach(function(element) {
+        //         element.style.display = '';
+        //     });
+        // }
+        //
+        // function printInvoice() {
+        //     // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
+        //     var printContents = document.getElementById('invoice').innerHTML;
+        //     var originalContents = document.body.innerHTML;
+        //
+        //     // Thay đổi nội dung trang web trước khi in
+        //     document.body.innerHTML = printContents;
+        //
+        //     // Gọi chức năng in của trình duyệt
+        //     window.print();
+        //
+        //     // Khôi phục lại nội dung ban đầu của trang sau khi in
+        //     document.body.innerHTML = originalContents;
+        // }
 
     </script>
 @endsection
