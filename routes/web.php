@@ -33,6 +33,7 @@ Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'stor
 Route::get('/order-success/{id}', [\App\Http\Controllers\HomeController::class, 'orderSuccess'])->name('orders.success');
 Route::get('/order/{id}', [\App\Http\Controllers\HomeController::class, 'show'])->name('orders.show');
 Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getOptions'])->name('product-options.show');
+Route::get('/search-products', [\App\Http\Controllers\HomeController::class, 'searchProducts'])->name('product-search');
 
 
 

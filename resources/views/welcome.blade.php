@@ -304,7 +304,21 @@
             <div class="col-lg-5 product-list">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-mug-hot"></i></h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-mug-hot"></i></h2>
+                            </div>
+                            <div class="col-md-8">
+                                <input
+                                    class="form-control mr-sm-2"
+                                    type="search"
+                                    name="search"
+                                    id="search-product"
+                                    placeholder="Search"
+                                    aria-label="Search"
+                                    onkeyup="searchProductOnEnter(event)">
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <ul id="product-container" class="list-group list-group-flush">
@@ -512,6 +526,58 @@
                 }
             });
         });
+
+        function searchProductOnEnter(event) {
+            if (event.key === "Enter") { // Kiểm tra phím Enter
+                const query = event.target.value.trim(); // Lấy giá trị nhập vào và loại bỏ khoảng trắng thừa
+                if (!query) {
+                    alert('Vui lòng nhập từ khóa tìm kiếm!'); // Hiển thị cảnh báo nếu không có giá trị
+                    return;
+                }
+
+                // Bỏ trạng thái "active" ở các mục trong danh sách menu
+                $('.category-item').removeClass('active');
+
+                showLoading();
+
+                // Gọi Ajax tìm kiếm sản phẩm
+                $.ajax({
+                    url: '/search-products', // Đường dẫn tới API tìm kiếm
+                    method: 'GET',
+                    data: { search: query }, // Dữ liệu gửi đi
+                    success: function(data) {
+                        // Hiển thị loading spinner
+                        hideLoading();
+                        const productContainer = $('#product-container');
+                        productContainer.empty();
+
+                        const productList = $('<ul class="list-group"></ul>'); // Create the ul container
+
+                        data.forEach(product => {
+                            const productItem = $(`
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1 card-title">${product.name}</h6>
+                                    <b class="text-muted">${(product.price / 1000).toFixed(0)}K</b>
+                                </div>
+                                <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="${product.id}" data-price="${product.price}"></i>
+                            </div>
+                        </li>
+                    `);
+                            productList.append(productItem); // Append li to the ul
+                        });
+
+                        productContainer.append(productList); // Append ul to the container
+                    },
+                    error: function(xhr) {
+                        alert('Đã xảy ra lỗi trong quá trình tìm kiếm sản phẩm');
+                        hideLoading();
+                    }
+                });
+            }
+        }
+
     </script>
 
     <script>
@@ -610,7 +676,7 @@
             addProductToCart(selectedProductId, finalProductName, finalProductPrice, finalOptionName);
 
             $('.option-checkbox').prop('checked', false);
-            
+
             // Đóng modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('product-options-modal'));
             modal.hide();
@@ -852,15 +918,6 @@
             }
         });
 
-        // // Hàm hiển thị popup
-        // function showCartPopup() {
-        //     const popup = $('#cart-popup');
-        //     popup.fadeIn(300); // Hiển thị popup với hiệu ứng fade in
-        //     setTimeout(() => {
-        //         popup.fadeOut(300); // Ẩn popup sau 2 giây
-        //     }, 2000); // Thời gian hiển thị là 2 giây
-        // }
-
         // Hàm hiển thị popup và mở giỏ hàng trên mobile
         function showCartPopup() {
             const popup = $('#cart-popup');
@@ -872,14 +929,17 @@
                 popup.fadeOut(300); // Ẩn popup sau 2 giây
             }, 2000); // Thời gian hiển thị là 2 giây
 
-            // Mở sidebar
-            sidebar.addClass('open');
-            updateSidebarCart(); // Cập nhật giỏ hàng trong sidebar
+            // Kiểm tra nếu đang ở màn hình mobile
+            if (window.innerWidth <= 768) { // Ngưỡng 768px cho thiết bị di động
+                // Mở sidebar
+                sidebar.addClass('open');
+                updateSidebarCart(); // Cập nhật giỏ hàng trong sidebar
 
-            // Tự động đóng sidebar sau 2 giây
-            setTimeout(() => {
-                sidebar.removeClass('open');
-            }, 3000);
+                // Tự động đóng sidebar sau 2 giây
+                setTimeout(() => {
+                    sidebar.removeClass('open');
+                }, 3000);
+            }
         }
 
     </script>

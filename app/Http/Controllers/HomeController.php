@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OrderCreated;
 use App\Models\Order;
+use App\Models\Product;
 use App\Repositories\Cart\CartRepository;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Order\OrderRepository;
@@ -268,6 +269,17 @@ class HomeController extends Controller
     public function orderSuccess($id){
         $order = $this->orderRepository->find($id);
         return view('admin.page.order_success', compact('order'));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Container\Container|mixed|object
+     */
+    public function searchProducts(Request $request) {
+        $query = $request->input('search');
+        $products = Product::where('name', 'like', '%' . $query . '%')->get();
+
+        return response()->json($products);
     }
 
 }
