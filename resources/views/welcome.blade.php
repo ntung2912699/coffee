@@ -309,14 +309,19 @@
                                 <h2 class="m-0 font-weight-bold text-primary"><i class="fas fa-mug-hot"></i></h2>
                             </div>
                             <div class="col-md-8">
-                                <input
-                                    class="form-control mr-sm-2"
-                                    type="search"
-                                    name="search"
-                                    id="search-product"
-                                    placeholder="Search"
-                                    aria-label="Search"
-                                    onkeyup="searchProductOnEnter(event)">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control"
+                                           name="search"
+                                           id="search-product"
+                                           placeholder="Tìm kiếm"
+                                           aria-label="Search"
+                                           onkeyup="searchProductOnEnter(event)">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-primary" type="button" onclick="searchProductOnClick()">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -526,6 +531,55 @@
                 }
             });
         });
+
+        function searchProductOnClick() {
+            const query = $('#search-product').val().trim(); // Lấy giá trị nhập vào và loại bỏ khoảng trắng thừa
+            if (!query) {
+                alert('Vui lòng nhập từ khóa tìm kiếm!'); // Hiển thị cảnh báo nếu không có giá trị
+                return;
+            }
+
+            // Bỏ trạng thái "active" ở các mục trong danh sách menu
+            $('.category-item').removeClass('active');
+
+            showLoading();
+
+            // Gọi Ajax tìm kiếm sản phẩm
+            $.ajax({
+                url: '/search-products', // Đường dẫn tới API tìm kiếm
+                method: 'GET',
+                data: { search: query }, // Dữ liệu gửi đi
+                success: function(data) {
+                    // Hiển thị loading spinner
+                    hideLoading();
+                    const productContainer = $('#product-container');
+                    productContainer.empty();
+
+                    const productList = $('<ul class="list-group"></ul>'); // Create the ul container
+
+                    data.forEach(product => {
+                        const productItem = $(`
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 card-title">${product.name}</h6>
+                                <b class="text-muted">${(product.price / 1000).toFixed(0)}K</b>
+                            </div>
+                            <i class="fas fa-cart-plus add-to-cart text-success" data-product-id="${product.id}" data-price="${product.price}"></i>
+                        </div>
+                    </li>
+                `);
+                        productList.append(productItem); // Append li to the ul
+                    });
+
+                    productContainer.append(productList); // Append ul to the container
+                },
+                error: function(xhr) {
+                    alert('Đã xảy ra lỗi trong quá trình tìm kiếm sản phẩm');
+                    hideLoading();
+                }
+            });
+        }
 
         function searchProductOnEnter(event) {
             if (event.key === "Enter") { // Kiểm tra phím Enter

@@ -277,7 +277,8 @@ class HomeController extends Controller
      */
     public function searchProducts(Request $request) {
         $query = $request->input('search');
-        $products = Product::where('name', 'ILIKE', '%' . $query . '%')->get();
+
+        $products = Product::where('name', 'LIKE', '%' . strtolower($query) . '%')->get();
 
         return response()->json($products);
     }
