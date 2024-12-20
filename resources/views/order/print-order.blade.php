@@ -3,23 +3,38 @@
 @section('content')
     <style>
         @media print {
-            body {
-                font-family: Arial, sans-serif;
-                color: black;
-            }
+    body {
+        font-family: Arial, sans-serif;
+        color: black;
+        font-size: 16px; /* Tăng cỡ chữ cho toàn bộ nội dung */
+    }
 
-            /* Ẩn các phần tử không cần thiết khi in */
-            .no-print {
-                display: none;
-            }
+    .invoice-header h1 {
+        font-size: 24px; /* Cỡ chữ cho tiêu đề hóa đơn */
+    }
 
-            /* Cải thiện bố cục cho trang in */
-            .invoice {
-                width: 100%;
-                padding: 20px;
-                border: 1px solid #ccc;
-            }
-        }
+    .invoice-info p, 
+    .invoice-total h4 {
+        font-size: 18px; /* Cỡ chữ cho các thông tin đơn hàng */
+    }
+
+    .table th, .table td {
+        font-size: 16px; /* Cỡ chữ cho bảng chi tiết đơn hàng */
+    }
+
+    .invoice-total {
+        font-size: 18px; /* Cỡ chữ cho tổng tiền */
+    }
+
+    /* Ẩn các phần tử không cần thiết khi in */
+    .print-button, /* Ẩn nút in */
+    .dropdown, /* Ẩn dropdown */
+    .invoice-info, /* Ẩn thông tin chi tiết */
+    .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
+    {
+        display: none !important;
+    }
+}
 
     </style>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
