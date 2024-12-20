@@ -119,7 +119,7 @@
             </div>
 
             <!-- Footer -->
-            @include('admin.component.footer')
+            {{-- @include('admin.component.footer') --}}
             <!-- End Footer -->
         </div>
     </div>
