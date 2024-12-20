@@ -851,13 +851,35 @@
             }
         });
 
-        // Hàm hiển thị popup
+        // // Hàm hiển thị popup
+        // function showCartPopup() {
+        //     const popup = $('#cart-popup');
+        //     popup.fadeIn(300); // Hiển thị popup với hiệu ứng fade in
+        //     setTimeout(() => {
+        //         popup.fadeOut(300); // Ẩn popup sau 2 giây
+        //     }, 2000); // Thời gian hiển thị là 2 giây
+        // }
+
+        // Hàm hiển thị popup và mở giỏ hàng trên mobile
         function showCartPopup() {
             const popup = $('#cart-popup');
+            const sidebar = $('#cart-sidebar');
+
+            // Hiển thị popup
             popup.fadeIn(300); // Hiển thị popup với hiệu ứng fade in
             setTimeout(() => {
                 popup.fadeOut(300); // Ẩn popup sau 2 giây
             }, 2000); // Thời gian hiển thị là 2 giây
+
+            // Mở sidebar
+            sidebar.addClass('open');
+            updateSidebarCart(); // Cập nhật giỏ hàng trong sidebar
+
+            // Tự động đóng sidebar sau 2 giây
+            setTimeout(() => {
+                sidebar.removeClass('open');
+            }, 3000);
         }
+
     </script>
 @endsection
