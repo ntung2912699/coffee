@@ -75,7 +75,7 @@
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
-                <a href="#" class="btn btn-primary" onclick="openPrintPopup()"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                <a href="{{ route('orders.printReceipt', ['id' => $order->id]) }}" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
                     <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
                 @else
