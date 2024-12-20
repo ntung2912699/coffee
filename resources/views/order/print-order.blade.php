@@ -6,24 +6,24 @@
     body {
         font-family: Arial, sans-serif;
         color: black;
-        font-size: 16px; /* Tăng cỡ chữ cho toàn bộ nội dung */
+        font-size: 30px; /* Tăng cỡ chữ cho toàn bộ nội dung */
     }
 
     .invoice-header h1 {
-        font-size: 24px; /* Cỡ chữ cho tiêu đề hóa đơn */
+        font-size: 30px; /* Cỡ chữ cho tiêu đề hóa đơn */
     }
 
     .invoice-info p, 
     .invoice-total h4 {
-        font-size: 18px; /* Cỡ chữ cho các thông tin đơn hàng */
+        font-size: 28px; /* Cỡ chữ cho các thông tin đơn hàng */
     }
 
     .table th, .table td {
-        font-size: 16px; /* Cỡ chữ cho bảng chi tiết đơn hàng */
+        font-size: 25px; /* Cỡ chữ cho bảng chi tiết đơn hàng */
     }
 
     .invoice-total {
-        font-size: 18px; /* Cỡ chữ cho tổng tiền */
+        font-size: 28px; /* Cỡ chữ cho tổng tiền */
     }
 
     /* Ẩn các phần tử không cần thiết khi in */
