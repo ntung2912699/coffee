@@ -14,7 +14,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -171,27 +171,28 @@ class HomeController extends Controller
             $order = Order::with('items.product')->findOrFail($orderId);
 
             // Kết nối đến máy in POS-80
-            $connector = new WindowsPrintConnector("POS-80");
+            $connector = new NetworkPrintConnector("192.168.1.220", 9100);
 
             // Tạo đối tượng máy in
             $printer = new Printer($connector);
-            $printer->setFont(Printer::FONT_B);
 
             // In thông tin cửa hàng
             $printer->text("COFFEE GIÓ\n");
-            $printer->text("Địa chỉ: 123 Đường ABC, TP HCM\n");
-            $printer->text("Điện thoại: 0123 456 789\n");
+            $printer->text("Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội");
+            $printer->text("Điện thoại: 0968 251 663");
 
             // In thông tin đơn hàng
             $printer->text("HÓA ĐƠN BÁN LẺ\n");
-            $printer->text("Mã đơn hàng #{$order->id}\n");
+            $printer->text("Mã đơn hàng: #{$order->id}\n");
             $printer->text("Ngày: {$order->created_at->format('d/m/Y H:i:s')}\n");
-            $printer->text("Tên khách hàng: New Customer\n");
-            $printer->text("Số điện thoại: N/A\n");
+            $printer->text("Tên khách hàng: {$order->customer_name}\n");
+            $printer->text("Số điện thoại: {$order->phone_number}\n");
+            $printer->text("Địa chỉ: {$order->address}\n");
+            
 
             // In các sản phẩm trong đơn hàng
             foreach ($order->items as $item) {
-                $printer->text("{$item->product->name} x {$item->quantity} - {$item->price} VNĐ\n");
+                $printer->text("{{ $item->product->name }} {{ $item->attributes }} x {$item->quantity} - {$item->price} VNĐ\n");
             }
 
             // Tổng tiền
