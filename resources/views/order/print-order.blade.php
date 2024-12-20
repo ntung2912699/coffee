@@ -10,11 +10,15 @@
     }
 
     .invoice-header h1 {
-        font-size: 60px; /* Cỡ chữ cho tiêu đề hóa đơn */
+        font-size: 50px; /* Cỡ chữ cho tiêu đề hóa đơn */
     }
 
     .invoice-info p, 
     .invoice-total h4 {
+        font-size: 30px; /* Cỡ chữ cho các thông tin đơn hàng */
+    }
+
+    .invoice-total h3 {
         font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
     }
 
