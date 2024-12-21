@@ -18,6 +18,10 @@
         font-size: 50px !important; /* Tăng cỡ chữ cho toàn bộ nội dung */
     }
 
+    #qr-bank {
+        width: 300px;
+    }
+
     .invoice-header h1 {
         font-size: 50px; /* Cỡ chữ cho tiêu đề hóa đơn */
     }
@@ -97,14 +101,25 @@
             <p>Điện thoại: 0968 251 663</p>
             <h3 class="mt-3">HÓA ĐƠN BÁN LẺ</h3>
         </div>
-        <div class="invoice-info">
-            <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
-            <p><strong>Trạng thái:</strong> <span id="status-order-prt">{{ $order->status }}</span></p>
-            <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
-            <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
-            <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
-            <p><strong>Địa chỉ:</strong> {{ $order->address }}</p>
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="text-center mt-4">
+                    <h4>Quét mã QR để thanh toán</h4>
+                     <img id="qr-bank" style="width:300px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="QR Code" />
+                 </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="invoice-info">
+                    <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
+                    <p><strong>Trạng thái:</strong> <span id="status-order-prt">{{ $order->status }}</span></p>
+                    <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
+                    <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
+                    <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
+                    <p><strong>Địa chỉ:</strong> {{ $order->address }}</p>
+                </div>
+            </div>
         </div>
+    
         <b class="mt-3">CHI TIẾT ĐƠN HÀNG :</b>
         <table class="table table-bordered mt-3">
             <thead>
@@ -130,11 +145,6 @@
         <div class="invoice-total">
             <h4 class="text-left"><strong>Tổng tiền: {{ number_format($order->total_price) }} VNĐ</strong></h4>
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
-        </div>
-
-       <div class="text-center mt-4">
-           <h4>Quét mã QR để thanh toán</h4>
-            <img style="width:300px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="QR Code" />
         </div>
 
         <div class="print-button text-center mt-3">
