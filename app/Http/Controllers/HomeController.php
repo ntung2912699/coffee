@@ -222,6 +222,25 @@ class HomeController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function statusOrderUpdate(Request $request, $id) {
+        $validate = $request->validate(
+            ['status' => 'required|string']
+        );
+
+        $order = $this->orderRepository->update($id, [
+            'status' => $validate['status']
+        ]);
+
+        return response()->json([
+            'order' => $order,
+        ]);
+    }
+
+    /**
      * @param $id
      * @return mixed
      */

@@ -16,8 +16,8 @@
         </div>
 
         <div class="mt-4">
-            <a href="{{ route('welcome') }}" class="btn btn-primary">Quay về Trang Chủ</a>
-            <a href="{{ route('orders.show', ['id' => $order->id ]) }}" class="btn btn-secondary">Xem Đơn Hàng của Tôi</a>
+            <a style="margin: 15px" href="{{ route('welcome') }}" class="btn btn-primary">Quay về Trang Chủ</a>
+            <a style="margin: 15px" href="{{ route('orders.show', ['id' => $order->id ]) }}" class="btn btn-secondary">Xem Đơn Hàng của Tôi</a>
         </div>
     </div>
 @endsection

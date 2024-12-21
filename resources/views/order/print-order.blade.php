@@ -84,6 +84,7 @@
         </div>
         <div class="invoice-info">
             <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
+            <p><strong>Trạng thái:</strong> <span id="status-order-prt">{{ $order->status }}</span></p>
             <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
             <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
             <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
@@ -124,7 +125,7 @@
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
-                <a onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
                     <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
                 @else
@@ -134,34 +135,42 @@
         </div>
     </div>
 
-    <style>
-        /*@media print {*/
-        /*    .print-button, !* Ẩn nút in *!*/
-        /*    .dropdown, !* Ẩn dropdown *!*/
-        /*    .invoice-info !* Ẩn thông tin chi tiết *!*/
-        /*    !*.d-sm-flex.align-items-center.justify-content-between.mb-4 !* Ẩn tiêu đề *!*!*/
-        /*    {*/
-        /*        display: none !important;*/
-        /*    }*/
-        /*}*/
-    </style>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // function openPrintPopup() {
-        //     // Ẩn các phần không cần thiết
-        //     var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .invoice-info, .d-sm-flex.align-items-center.justify-content-between.mb-4');
-        //     elementsToHide.forEach(function(element) {
-        //         element.style.display = 'none';
-        //     });
-        //
-        //     // Mở cửa sổ in
-        //     window.print();
-        //
-        //     // Sau khi in, hiển thị lại các phần tử đã ẩn
-        //     elementsToHide.forEach(function(element) {
-        //         element.style.display = '';
-        //     });
-        // }
+        function printReceipt() {
+            // Ẩn các phần không cần thiết
+            var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .d-sm-flex.align-items-center.justify-content-between.mb-4');
+            elementsToHide.forEach(function(element) {
+                element.style.display = 'none';
+            });
+
+            showLoading();
+
+            $.ajax({
+                url: "{{ route('orders.updateStatus', ['id' => $order->id]) }}",
+                type: "POST",
+                data: {
+                    order_id: {{ $order->id }},
+                    status: 'completed',
+                    _token: "{{ csrf_token() }}", // CSRF token
+                },
+                success: function (response) {
+                    $('#status-order-prt').text(response.order.status)
+                    hideLoading();
+                    // Mở cửa sổ in
+                    window.print();
+                },
+                error: function (xhr, status, error) {
+                    hideLoading();
+                    alert("An error occurred: " + error);
+                }
+            });
+
+            // Sau khi in, hiển thị lại các phần tử đã ẩn
+            elementsToHide.forEach(function(element) {
+                element.style.display = '';
+            });
+        }
         //
         // function printInvoice() {
         //     // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in

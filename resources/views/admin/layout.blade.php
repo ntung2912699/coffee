@@ -142,14 +142,14 @@
                     @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
-                            <i type="button" class="btn-close fas fa-trash-alt" data-bs-dismiss="alert" aria-label="Close"></i>
+                            <i type="button" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></i>
                         </div>
                     @endif
 
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ session('error') }}
-                            <i type="button" class="btn-close fas fas fas fa-trash-alt" data-bs-dismiss="alert" aria-label="Close"></i>
+                            <i type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></i>
                         </div>
                     @endif
                 <!-- Modal xác nhận xóa -->
