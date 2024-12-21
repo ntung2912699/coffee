@@ -2,6 +2,11 @@
 
 
 @section('content')
+    <style>
+        i {
+            color: white !important;
+        }
+    </style>
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
         @if (auth()->check())
@@ -27,7 +32,7 @@
                 </a>
             @endif
             <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH ĐƠN HÀNG
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> DANH ĐƠN HÀNG
             </h5>
         </div>
         <div class="table-responsive">
@@ -52,7 +57,7 @@
                             <td>{{ $order->customer_name }}</td>
                             <td>{{ $order->phone_number }}</td>
                             <td>{{ $order->status }}</td>
-                            <td>{{ $order->total_price }}</td>
+                            <td>{{ number_format($order->total_price , 0) }} VNĐ</td>
                             <td>{{ $order->order_date }}</td>
                             <td>{{ $order->created_at }}</td>
                             <td>{{ $order->updated_at }}</td>

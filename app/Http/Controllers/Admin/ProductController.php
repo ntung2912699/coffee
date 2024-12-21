@@ -7,6 +7,7 @@ use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Product\ProductOptionRepository;
 use App\Repositories\Product\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -52,8 +53,10 @@ class ProductController extends Controller
         try {
             $products = $this->productRepository->getAll();
             $categories = $this->categoryRepository->getAll();
+            $attributes = $this->productOptionRepository->getAll();
+            $attribute = $attributes->groupBy('attribute_name');
 
-            return view('admin.page.product.index', compact('products', 'categories'));
+        return view('admin.page.product.index', compact('products', 'categories', 'attribute'));
         } catch (\Exception $exception) {
             return view('admin.page.error');
         }
@@ -76,16 +79,22 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'category_id' => 'required|exists:category,id',
             'description' => 'nullable|max:1000',
+            'attribute_name' => 'nullable|array'
         ]);
 
-        try {
+        $attribute_name = null;
+        if (!empty($request->attribute_name) && count($request->attribute_name) > 0) {
+            $attribute_name = implode(",", $request->attribute_name);
+        }
 
+        try {
             // Create the product
             $this->productRepository->create([
                 'name' => $request->name,
                 'category_id' => $request->category_id,
                 'price' => $formattedDecimalPrice,
                 'description' => $request->description,
+                'attribute_name' => $attribute_name
             ]);
             return redirect()->route('admin.product-index')->with('success', 'Thêm sản phẩm thành công!');
         } catch (\Exception $exception) {
@@ -113,6 +122,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:category,id',
             'description' => 'nullable|string|max:1000',
+            'attribute_name' => 'nullable|array',
         ]);
 
         try {
@@ -122,6 +132,7 @@ class ProductController extends Controller
                 'category_id' => $request->get('category_id'),
                 'price' => $formattedDecimalPrice,
                 'description' => $request->get('description'),
+                'attribute_name' => $request->get('attribute_name') ? implode(',', $request->get('attribute_name')) : null,
             ]);
 
             return redirect()->route('admin.product-index')->with('success', 'Sản phẩm đã được cập nhật!');

@@ -2,6 +2,11 @@
 
 
 @section('content')
+    <style>
+        i {
+            color: white !important;
+        }
+    </style>
     <div class="content" style="min-height: 760px">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             @if (auth()->check())
@@ -27,7 +32,7 @@
                 </a>
             @endif
             <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH SÁCH SẢN PHẨM
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> DANH SÁCH SẢN PHẨM
                 <button class="btn btn-sm btn-outline-primary text-primary d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#productModal">
                     <i class="fas fa-plus"></i>
                     Thêm Mới
@@ -65,8 +70,20 @@
                                 <input type="text" class="form-control form-control-user" name="price" id="price" placeholder="Giá Tiền" onkeyup="formatPrice(this)">
                             </div>
                             <div class="form-group">
-                                <label for="description" class="form-label">Mô Tả</label>
-                                <input type="text" class="form-control form-control-user" name="description" id="description" placeholder="Mô Tả">
+                                <label for="price" class="form-label">Tùy Chọn Sản Phẩm</label>
+                                @foreach($attribute as $key=>$item)
+                                    <div class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="attribute_name[]"
+                                            value="{{ $key }}"
+                                            id="flexCheck{{ $key }}">
+                                        <label class="form-check-label" for="flexCheck{{ $key }}">
+                                            {{ $key }}
+                                        </label>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -100,7 +117,7 @@
                             <td>
                                 {{ $product->name }}
                             </td>
-                            <td>{{ $product->price }}</td>
+                            <td>{{ number_format($product->price , 0) }} VNĐ</td>
                             <td>{{ $product->description }}</td>
                             <td>{{ $product->created_at }}</td>
                             <td>{{ $product->updated_at }}</td>
@@ -113,8 +130,9 @@
                                             data-name="{{ $product->name }}"
                                             data-category-id="{{ $product->category_id }}"
                                             data-price="{{ $product->price }}"
-                                            data-description="{{ $product->description }}">
-                                        <i class="text-info fas fa-pen-alt"></i>
+                                            data-description="{{ $product->description }}"
+                                            data-attribute-name="{{ $product->attribute_name }}">
+                                        <i class="fas fa-pen-alt"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $product->id }}">
                                         <i class="fas fa-trash-alt"></i>
@@ -158,9 +176,22 @@
                             <label for="price" class="form-label">Giá Tiền</label>
                             <input type="text" class="form-control form-control-user" name="price" id="price" placeholder="Giá Tiền" onkeyup="formatPrice(this)">
                         </div>
+                        <!-- Attributes -->
                         <div class="form-group">
-                            <label for="description" class="form-label">Mô Tả</label>
-                            <input type="text" class="form-control form-control-user" name="description" id="description" placeholder="Mô Tả">
+                            <label for="editProductAttributes" class="form-label">Tùy chọn sản phẩm</label>
+                            @foreach($attribute as $key=>$item)
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input edit-attribute-checkbox"
+                                        type="checkbox"
+                                        name="attribute_name[]"
+                                        value="{{ $key }}"
+                                        id="editCheckbox{{ $key }}">
+                                    <label class="form-check-label" for="editCheckbox{{ $key }}">
+                                        {{ $key }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -185,13 +216,19 @@
                 const productCategoryId = $(this).data('category-id');
                 const productPrice = $(this).data('price');
                 const productDescription = $(this).data('description');
-                const productOptions = $(this).data('options') || []; // Các tùy chọn trước đó, nếu có
+                const attributes = this.dataset.attributeName ? this.dataset.attributeName.split(',') : [];
 
                 // Điền thông tin vào các trường của modal
                 $('#productEditModal #name').val(productName);
                 $('#productEditModal #category_id').val(productCategoryId);
                 $('#productEditModal #price').val(productPrice);
                 $('#productEditModal #description').val(productDescription);
+
+                // Xử lý checkbox
+                const checkboxes = document.querySelectorAll('.edit-attribute-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = attributes.includes(checkbox.value);
+                });
 
                 // Cập nhật action của form để gửi đúng sản phẩm
                 $('#productEditModal form').attr('action', '/admin/product-update/' + productId);

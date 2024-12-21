@@ -2,6 +2,11 @@
 
 
 @section('content')
+    <style>
+        i {
+            color: white !important;
+        }
+    </style>
     <div class="content" style="min-height: 760px">
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -28,7 +33,7 @@
                 </a>
             @endif
             <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> DANH DANH MỤC
+                <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> DANH DANH MỤC
                 <button class="btn btn-sm btn-outline-primary text-primary d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#categoryModal">
                     <i class="fas fa-plus"></i>
                     Thêm Mới
@@ -82,9 +87,9 @@
                                 <form method="POST" action="{{ route('admin.category-delete', ['id' => $category->id]) }}" id="deleteForm_{{ $category->id }}">
                                 @csrf
                                 <div class="btn-group-lg">
-                                    <button type="button" class="btn btn-outline-info edit-category-btn" data-bs-toggle="modal" data-bs-target="#categoryEditModal" data-id="{{ $category->id }}"
+                                    <button type="button" class="btn edit-category-btn" data-bs-toggle="modal" data-bs-target="#categoryEditModal" data-id="{{ $category->id }}"
                                     data-name="{{ $category->name }}">
-                                        <i class="text-info fas fa-pen-alt"></i>
+                                        <i class="fas fa-pen-alt"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger deleteBtn" data-form-id="deleteForm_{{ $category->id }}">
                                         <i class="fas fa-trash-alt"></i>

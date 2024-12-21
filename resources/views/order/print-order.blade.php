@@ -2,6 +2,15 @@
 
 @section('content')
     <style>
+        i {
+            color: white !important;
+        }
+
+        b, strong {
+            font-weight: 700 !important;
+        }
+    </style>
+    <style>
         @media print {
     body {
         font-family: Arial, sans-serif;
@@ -15,6 +24,11 @@
 
     h5 {
         font-size: 40px;
+        }
+    .invoice-info p,
+    .invoice-total h4,
+    .invoice-total h3{
+        font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
     }
 
     .invoice-header p,
@@ -43,7 +57,7 @@
     /* Ẩn các phần tử không cần thiết khi in */
     .print-button, /* Ẩn nút in */
     .dropdown, /* Ẩn dropdown */
-    .invoice-info, /* Ẩn thông tin chi tiết */
+    /*.invoice-info !* Ẩn thông tin chi tiết *!*/
     .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
     {
         display: none !important;
@@ -73,7 +87,7 @@
             </a>
         @endif
         <h5 class="h5 mb-0 text-gray-800" style="margin: 10px">
-            <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left"></i></a> CHI TIẾT ĐƠN HÀNG
+            <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> CHI TIẾT ĐƠN HÀNG
         </h5>
     </div>
     <div class="container" style="max-width: 700px" id="invoice">
@@ -85,6 +99,7 @@
         </div>
         <div class="invoice-info">
             <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
+            <p><strong>Trạng thái:</strong> <span id="status-order-prt">{{ $order->status }}</span></p>
             <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
             <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
             <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
@@ -117,15 +132,15 @@
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
-        <div class="text-center mt-4">
-            <h4>Quét mã QR để thanh toán</h4>
-            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />
-        </div>
+{{--        <div class="text-center mt-4">--}}
+{{--            <h4>Quét mã QR để thanh toán</h4>--}}
+{{--            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />--}}
+{{--        </div>--}}
 
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
-                <a href="#" onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
+                <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
                     <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
                 @else
@@ -135,49 +150,57 @@
         </div>
     </div>
 
-    <style>
-        @media print {
-            .print-button, /* Ẩn nút in */
-            .dropdown, /* Ẩn dropdown */
-            .invoice-info, /* Ẩn thông tin chi tiết */
-            .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
-            {
-                display: none !important;
-            }
-        }
-    </style>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function openPrintPopup() {
+        function printReceipt() {
             // Ẩn các phần không cần thiết
-            var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .invoice-info, .d-sm-flex.align-items-center.justify-content-between.mb-4');
+            var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .d-sm-flex.align-items-center.justify-content-between.mb-4');
             elementsToHide.forEach(function(element) {
                 element.style.display = 'none';
             });
 
-            // Mở cửa sổ in
-            window.print();
+            showLoading();
+
+            $.ajax({
+                url: "{{ route('orders.updateStatus', ['id' => $order->id]) }}",
+                type: "POST",
+                data: {
+                    order_id: {{ $order->id }},
+                    status: 'completed',
+                    _token: "{{ csrf_token() }}", // CSRF token
+                },
+                success: function (response) {
+                    $('#status-order-prt').text(response.order.status)
+                    hideLoading();
+                    // Mở cửa sổ in
+                    window.print();
+                },
+                error: function (xhr, status, error) {
+                    hideLoading();
+                    alert("An error occurred: " + error);
+                }
+            });
 
             // Sau khi in, hiển thị lại các phần tử đã ẩn
             elementsToHide.forEach(function(element) {
                 element.style.display = '';
             });
         }
-
-        function printInvoice() {
-            // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
-            var printContents = document.getElementById('invoice').innerHTML;
-            var originalContents = document.body.innerHTML;
-
-            // Thay đổi nội dung trang web trước khi in
-            document.body.innerHTML = printContents;
-
-            // Gọi chức năng in của trình duyệt
-            window.print();
-
-            // Khôi phục lại nội dung ban đầu của trang sau khi in
-            document.body.innerHTML = originalContents;
-        }
+        //
+        // function printInvoice() {
+        //     // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
+        //     var printContents = document.getElementById('invoice').innerHTML;
+        //     var originalContents = document.body.innerHTML;
+        //
+        //     // Thay đổi nội dung trang web trước khi in
+        //     document.body.innerHTML = printContents;
+        //
+        //     // Gọi chức năng in của trình duyệt
+        //     window.print();
+        //
+        //     // Khôi phục lại nội dung ban đầu của trang sau khi in
+        //     document.body.innerHTML = originalContents;
+        // }
 
     </script>
 @endsection

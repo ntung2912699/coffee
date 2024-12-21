@@ -25,15 +25,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/printReceipt/{id}', [\App\Http\Controllers\HomeController::class, 'printReceipt'])->name('orders.printReceipt');
     Route::post('/orders/cancel/{id}', [\App\Http\Controllers\HomeController::class, 'cancelOrder'])->name('orders.cancel');
     Route::post('/orders/delete/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'delete'])->name('orders.delete');
+    Route::get('/orders/revenue', [\App\Http\Controllers\Admin\AdminController::class, 'revenue'])->name('admin.orders-revenue');
 });
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('welcome');
 Route::get('/categories/{id}/products', [\App\Http\Controllers\HomeController::class, 'getProductsByCategory'])->name('product-by-category');
 Route::post('/orders/store', [\App\Http\Controllers\HomeController::class, 'storeOrder'])->name('orders.store');
 Route::get('/order-success/{id}', [\App\Http\Controllers\HomeController::class, 'orderSuccess'])->name('orders.success');
+Route::post('/order-update-status/{id}', [\App\Http\Controllers\HomeController::class, 'statusOrderUpdate'])->name('orders.updateStatus');
 Route::get('/order/{id}', [\App\Http\Controllers\HomeController::class, 'show'])->name('orders.show');
-Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getOptions'])->name('product-options.show');
 Route::get('/search-products', [\App\Http\Controllers\HomeController::class, 'searchProducts'])->name('product-search');
+Route::get('/product/{id}/attributes', [\App\Http\Controllers\HomeController::class, 'getProductAttributes']);
+Route::get('/product-options', [\App\Http\Controllers\HomeController::class, 'getProductOptions']);
+
 
 
 
