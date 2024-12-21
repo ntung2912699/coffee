@@ -11,22 +11,15 @@
         }
     </style>
     <style>
-        /* Cấu hình ngắt trang hợp lý */
-    @page {
-        size: auto;
-    }
-
         @media print {
     body {
         font-family: Arial, sans-serif;
         color: black;
         font-size: 50px !important; /* Tăng cỡ chữ cho toàn bộ nội dung */
-        margin: 0;
-        padding: 0;
     }
 
     #qr-bank {
-        width: 100% !important;
+        width: 300px;
     }
 
     .invoice-header h1 {
@@ -154,10 +147,10 @@
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
-        <div class="text-center mt-4">
+        {{-- <div class="text-center mt-4">
             <p><strong>Quét mã QR để thanh toán</strong></p>
             <img id="qr-bank" style="width:300px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="QR Code" />
-        </div>
+        </div> --}}
 
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
