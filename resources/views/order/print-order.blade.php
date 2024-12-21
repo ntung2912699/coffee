@@ -25,6 +25,16 @@
     height: auto; /* Chiều cao tự động dựa trên nội dung thực tế */
 }
 
+            #invoice {
+                width: 80mm;
+                overflow: visible;
+            }
+
+            .invoice {
+                width: 80mm;
+                overflow: visible;
+            }
+
     #qr-bank {
         width: 300px;
     }
