@@ -132,10 +132,10 @@
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
-{{--        <div class="text-center mt-4">--}}
-{{--            <h4>Quét mã QR để thanh toán</h4>--}}
-{{--            <img src="{{ asset($qrCodePath) }}" alt="QR Code" />--}}
-{{--        </div>--}}
+       <div class="text-center mt-4">
+           <h4>Quét mã QR để thanh toán</h4>
+            <img style="width:300px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="QR Code" />
+        </div>
 
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
