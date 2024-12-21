@@ -12,11 +12,18 @@
     </style>
     <style>
         @media print {
+            @page {
+                size: 80mm auto;
+            }
     body {
         font-family: Arial, sans-serif;
         color: black;
         font-size: 50px !important; /* Tăng cỡ chữ cho toàn bộ nội dung */
     }
+
+ html, body {
+    height: auto; /* Chiều cao tự động dựa trên nội dung thực tế */
+}
 
     #qr-bank {
         width: 300px;
