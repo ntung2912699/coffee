@@ -11,6 +11,11 @@
         }
     </style>
     <style>
+        /* Cấu hình ngắt trang hợp lý */
+    @page {
+        size: auto;
+    }
+
         @media print {
     body {
         font-family: Arial, sans-serif;
