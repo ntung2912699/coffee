@@ -15,6 +15,27 @@
             @page {
                 size: 80mm auto;
             }
+
+            #invoice {
+        page-break-inside: avoid; /* Tránh ngắt trang trong hóa đơn */
+    }
+            
+    .invoice {
+        page-break-inside: avoid; /* Tránh ngắt trang trong hóa đơn */
+    }
+
+    .invoice-header, .invoice-footer, .invoice-table {
+        page-break-inside: avoid; /* Tránh ngắt trang trong các phần tử này */
+    }
+
+    .invoice-table tbody tr {
+        page-break-inside: avoid; /* Không chia nhỏ giữa các dòng */
+    }
+
+    .invoice {
+        height: auto; /* Chiều cao tự động dựa vào nội dung */
+    }
+                
     body {
         font-family: Arial, sans-serif;
         color: black;
