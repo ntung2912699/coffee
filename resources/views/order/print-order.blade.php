@@ -6,19 +6,29 @@
     body {
         font-family: Arial, sans-serif;
         color: black;
-        font-size: 45px; /* Tăng cỡ chữ cho toàn bộ nội dung */
+        font-size: 50px !important; /* Tăng cỡ chữ cho toàn bộ nội dung */
     }
 
     .invoice-header h1 {
         font-size: 50px; /* Cỡ chữ cho tiêu đề hóa đơn */
     }
 
-    .invoice-info p, 
-    .invoice-total h4 {
-        font-size: 30px; /* Cỡ chữ cho các thông tin đơn hàng */
+    h5 {
+        font-size: 40px;
     }
 
-    .invoice-total h3 {
+    .invoice-header p,
+    .invoice-header h3 {
+        font-size: 40px;
+    } 
+
+    .invoice-info p, 
+    .invoice-total h4 {
+        font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
+    }
+
+    .invoice-total h3,
+    .invoice-total h4 {
         font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
     }
 
