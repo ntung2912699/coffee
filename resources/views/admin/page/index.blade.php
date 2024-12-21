@@ -165,7 +165,7 @@
                             <td>{{ $order->customer_name }}</td>
                             <td>{{ $order->phone_number }}</td>
                             <td>{{ $order->status }}</td>
-                            <td>{{ $order->total_price }}</td>
+                            <td>{{ number_format($order->total_price, 0) }} VNĐ</td>
                             <td>{{ $order->order_date }}</td>
                             <td>{{ $order->created_at }}</td>
                             <td>{{ $order->updated_at }}</td>

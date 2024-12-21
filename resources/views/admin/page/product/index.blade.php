@@ -117,7 +117,7 @@
                             <td>
                                 {{ $product->name }}
                             </td>
-                            <td>{{ $product->price }}</td>
+                            <td>{{ number_format($product->price , 0) }} VNĐ</td>
                             <td>{{ $product->description }}</td>
                             <td>{{ $product->created_at }}</td>
                             <td>{{ $product->updated_at }}</td>

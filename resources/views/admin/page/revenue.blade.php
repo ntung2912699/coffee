@@ -100,7 +100,7 @@
                         @foreach ($revenueByDay as $stat)
                             <tr>
                                 <td>{{ $stat->group_date }}</td>
-                                <td>{{ number_format($stat->total_revenue, 0) }} VND</td>
+                                <td>{{ number_format($stat->total_revenue, 0) }} VNĐ</td>
                                 <td>{{ $stat->total_orders }}</td>
                             </tr>
                         @endforeach
