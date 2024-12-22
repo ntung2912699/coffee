@@ -22,7 +22,7 @@
             body {
                 margin: 0;
                 font-family: Arial, sans-serif;
-                font-size: 30px;
+                font-size: 33px;
                 color: black;
             }
 
@@ -36,7 +36,7 @@
             /*    page-break-inside: avoid; !* Tránh ngắt trang bên trong *!*/
             /*}*/
             .invoice-total p {
-                font-size: 30px;
+                font-size: 33px;
             }
 
             .invoice-total h4 span {
@@ -44,16 +44,16 @@
             }
 
             .invoice-header p {
-                font-size: 30px !important;
+                font-size: 33px !important;
             }
 
             .invoice-info p,
             .invoice-info span {
-                font-size: 30px !important;
+                font-size: 33px !important;
             }
 
             .title-order {
-                font-size: 30px !important;
+                font-size: 33px !important;
             }
 
             .table {
@@ -62,7 +62,7 @@
             }
 
             .table th, .table td {
-                font-size: 30px !important;
+                font-size: 33px !important;
                 border: 0;
                 color: #858796 !important;
                 padding: 4px;
