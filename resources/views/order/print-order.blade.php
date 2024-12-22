@@ -22,7 +22,7 @@
             body {
                 margin: 0;
                 font-family: Arial, sans-serif;
-                font-size: 28px;
+                font-size: 30px;
                 color: black;
             }
 
@@ -36,7 +36,7 @@
             /*    page-break-inside: avoid; !* Tránh ngắt trang bên trong *!*/
             /*}*/
             .invoice-total p {
-                font-size: 28px;
+                font-size: 30px;
             }
 
             .invoice-total h4 span {
@@ -44,16 +44,16 @@
             }
 
             .invoice-header p {
-                font-size: 28px !important;
+                font-size: 30px !important;
             }
 
             .invoice-info p,
             .invoice-info span {
-                font-size: 28px !important;
+                font-size: 30px !important;
             }
 
             .title-order {
-                font-size: 28px !important;
+                font-size: 30px !important;
             }
 
             .table {
@@ -62,7 +62,7 @@
             }
 
             .table th, .table td {
-                font-size: 28px !important;
+                font-size: 30px !important;
                 border: 0;
                 color: #858796 !important;
                 padding: 4px;
@@ -136,7 +136,7 @@
             </div>
 
             <div class="invoice-paypal text-center col-4">
-                <img style="width: 200px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="Mã QR thanh toán"/>
+                <img style="width: 100%" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="Mã QR thanh toán"/>
                 <p>Quét mã QR để thanh toán</p>
             </div>
         </div>
