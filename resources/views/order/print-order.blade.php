@@ -6,117 +6,79 @@
             color: white !important;
         }
 
-        b, strong {
-            font-weight: 700 !important;
+        .table th, .table td {
+            border: 0;
+            color: #858796 !important;
+            text-align: left;
         }
     </style>
     <style>
         @media print {
-            @page {
-                size: 80mm auto;
+            /*@page {*/
+            /*    size: 80mm auto; !* Khổ giấy 80mm, chiều cao tự động *!*/
+            /*    margin: 0; !* Xóa margin mặc định của trình duyệt *!*/
+            /*}*/
+
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                font-size: 28px;
+                color: black;
             }
 
-            #invoice {
-        page-break-inside: avoid; /* Tránh ngắt trang trong hóa đơn */
-    }
-            
-    .invoice {
-        page-break-inside: avoid; /* Tránh ngắt trang trong hóa đơn */
-    }
-
-    .invoice-header, .invoice-footer, .invoice-table {
-        page-break-inside: avoid; /* Tránh ngắt trang trong các phần tử này */
-    }
-
-    .invoice-table tbody tr {
-        page-break-inside: avoid; /* Không chia nhỏ giữa các dòng */
-    }
-
-    .invoice {
-        height: auto; /* Chiều cao tự động dựa vào nội dung */
-    }
-                
-    body {
-        font-family: Arial, sans-serif;
-        color: black;
-        font-size: 50px !important; /* Tăng cỡ chữ cho toàn bộ nội dung */
-    }
-
- html, body {
-    height: auto; /* Chiều cao tự động dựa trên nội dung thực tế */
-}
-
-            #invoice {
-                width: 80mm;
-                overflow: visible;
+            p {
+                margin-bottom: 0 !important;
             }
 
-            .invoice {
-                width: 80mm;
-                overflow: visible;
+            /*#invoice {*/
+            /*    width: 80mm;*/
+            /*    overflow: visible;*/
+            /*    page-break-inside: avoid; !* Tránh ngắt trang bên trong *!*/
+            /*}*/
+            .invoice-total p {
+                font-size: 28px;
             }
 
-    #qr-bank {
-        width: 300px;
-    }
+            .invoice-total h4 span {
+                font-size: 35px;
+            }
 
-    .invoice-header h1 {
-        font-size: 50px; /* Cỡ chữ cho tiêu đề hóa đơn */
-    }
+            .invoice-header p {
+                font-size: 28px !important;
+            }
 
-    h5 {
-        font-size: 40px;
+            .invoice-info p,
+            .invoice-info span {
+                font-size: 28px !important;
+            }
+
+            .title-order {
+                font-size: 28px !important;
+            }
+
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .table th, .table td {
+                font-size: 28px !important;
+                border: 0;
+                color: #858796 !important;
+                padding: 4px;
+                text-align: left;
+            }
+
+            .print-button, .dropdown, .d-sm-flex.align-items-center.justify-content-between.mb-4 , .none-content-print{
+                display: none !important; /* Ẩn các phần không cần in */
+            }
+
+            #status-order {
+                display: none !important;
+            }
         }
-    .invoice-info p,
-    .invoice-total h4,
-    .invoice-total h3{
-        font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
-    }
-
-    .invoice-header p,
-    .invoice-header h3 {
-        font-size: 35px;
-    } 
-
-    .invoice-info p, 
-    .invoice-total h4 {
-        font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
-    }
-
-    .invoice-total h3,
-    .invoice-total h4 {
-        font-size: 40px; /* Cỡ chữ cho các thông tin đơn hàng */
-    }
-
-    .table th, .table td {
-        font-size: 35px; /* Cỡ chữ cho bảng chi tiết đơn hàng */
-    }
-
-    .invoice-total {
-        font-size: 45px; /* Cỡ chữ cho tổng tiền */
-    }
-
-    /* Ẩn các phần tử không cần thiết khi in */
-    .print-button, /* Ẩn nút in */
-    .dropdown, /* Ẩn dropdown */
-    /*.invoice-info !* Ẩn thông tin chi tiết *!*/
-    .d-sm-flex.align-items-center.justify-content-between.mb-4 /* Ẩn tiêu đề */
-    {
-        display: none !important;
-    }
-
-    .invoice-header, .invoice-info, .invoice-total, .print-button {
-        page-break-inside: avoid; /* Tránh chia các phần này giữa hai trang */
-    }
-
-    .container {
-        max-width: 100%; /* Đảm bảo container chiếm hết chiều rộng trang */
-        width: auto;
-        padding: 0;
-    }
-}
-
     </style>
+
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         @if (auth()->check())
             <div class="dropdown">
@@ -142,29 +104,50 @@
             <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> CHI TIẾT ĐƠN HÀNG
         </h5>
     </div>
+
     <div class="container" style="max-width: 700px" id="invoice">
         <div class="invoice-header text-center">
-            <h1 class="font-weight-bold">COFFEE GIÓ</h1>
-            <p>Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội</p>
-            <p>Điện thoại: 0968 251 663</p>
-            <h3 class="mt-3">HÓA ĐƠN BÁN LẺ</h3>
+            <h1 class="font-weight-bold" style="font-size: 28px;">COFFEE GIÓ</h1>
+            <p style="font-size: 16px;">Đ/C: Số 3 - đường Đầm Vực Giang - Hạ Bằng - Thạch Thất - Hà Nội</p>
+            <p style="font-size: 16px;">Điện thoại: 0968 251 663</p>
+            <h3 class="mt-3" style="font-size: 25px;">HÓA ĐƠN BÁN LẺ</h3>
         </div>
-        <div class="invoice-info">
-            <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
-            <p><strong>Trạng thái:</strong> <span id="status-order-prt">{{ $order->status }}</span></p>
-            <p><strong>Ngày:</strong> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
-            <p><strong>Tên khách:</strong> {{ $order->customer_name }}</p>
-            <p><strong>Số điện thoại:</strong> {{ $order->phone_number }}</p>
-            <p><strong>Địa chỉ:</strong> {{ $order->address }}</p>
+
+        <div class="row">
+            <div class="invoice-info col-8">
+                <p><span>Mã đơn hàng:</span> {{ $order->id }}</p>
+                <p id="status-order"><span>Trạng thái:</span> <span id="status-order-prt">{{ $order->status }}</span></p>
+                <p><span>Ngày:</span> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
+                @if($order->customer_name === 'new customer')
+                    <p class="none-content-print"><span>Tên khách:</span> {{ $order->customer_name }}</p>
+                @else
+                    <p><span>Tên khách:</span> {{ $order->customer_name }}</p>
+                @endif
+                @if($order->phone_number === 'N/A')
+                    <p class="none-content-print"><span>Số điện thoại:</span> {{ $order->phone_number }}</p>
+                @else
+                    <p><span>Số điện thoại:</span> {{ $order->phone_number }}</p>
+                @endif
+                @if($order->address === 'N/A')
+                    <p class="none-content-print"><span>Địa chỉ:</span> {{ $order->address }}</p>
+                @else
+                    <p><span>Địa chỉ:</span> {{ $order->address }}</p>
+                @endif
+            </div>
+
+            <div class="invoice-paypal text-center col-4">
+                <img style="width: 200px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="Mã QR thanh toán"/>
+                <p>Quét mã QR để thanh toán</p>
+            </div>
         </div>
-    
-        <b class="mt-3">CHI TIẾT ĐƠN HÀNG :</b>
+
+        <h5 class="title-order">CHI TIẾT ĐƠN HÀNG :</h5>
         <table class="table table-bordered mt-3">
             <thead>
             <tr>
                 <th style="width: 40%;">Tên sản phẩm</th>
                 <th class="text-center" style="width: 10%;">SL</th>
-                <th class="text-right" style="width: 25%;">Đơn giá</th>
+                <th class="text-right" style="width: 25%;">Giá</th>
                 <th class="text-right" style="width: 25%;">Thành tiền</th>
             </tr>
             </thead>
@@ -181,23 +164,18 @@
         </table>
 
         <div class="invoice-total">
-            <h4 class="text-left"><strong>Tổng tiền: {{ number_format($order->total_price) }} VNĐ</strong></h4>
+            <h4 class="text-left"><span>Tổng tiền: {{ number_format($order->total_price) }} VNĐ</span></h4>
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
-
-        {{-- <div class="text-center mt-4">
-            <p><strong>Quét mã QR để thanh toán</strong></p>
-            <img id="qr-bank" style="width:300px" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="QR Code" />
-        </div> --}}
 
         <div class="print-button text-center mt-3">
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
                 <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
                 @if ($order->status == 'pending')
-                    <button type="submit" class="btn btn-outline-danger">Huỷ Đơn Hàng</button>
+                    <button type="submit" class="btn btn-outline-danger">HỦY ĐƠN</button>
                 @else
-                    <button type="submit" class="btn btn-outline-danger" style="display:none;">Huỷ Đơn Hàng</button>
+                    <button type="submit" class="btn btn-outline-danger" style="display:none;">HỦY ĐƠN</button>
                 @endif
             </form>
         </div>
@@ -206,13 +184,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function printReceipt() {
-            // Ẩn các phần không cần thiết
             var elementsToHide = document.querySelectorAll('.print-button, .dropdown, .d-sm-flex.align-items-center.justify-content-between.mb-4');
             elementsToHide.forEach(function(element) {
                 element.style.display = 'none';
             });
-
-            showLoading();
 
             $.ajax({
                 url: "{{ route('orders.updateStatus', ['id' => $order->id]) }}",
@@ -220,40 +195,22 @@
                 data: {
                     order_id: {{ $order->id }},
                     status: 'completed',
-                    _token: "{{ csrf_token() }}", // CSRF token
+                    _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {
-                    $('#status-order-prt').text(response.order.status)
-                    hideLoading();
-                    // Mở cửa sổ in
+                    $('#status-order-prt').text(response.order.status);
                     window.print();
                 },
                 error: function (xhr, status, error) {
-                    hideLoading();
-                    alert("An error occurred: " + error);
+                    alert("Đã xảy ra lỗi: " + error);
                 }
             });
 
-            // Sau khi in, hiển thị lại các phần tử đã ẩn
-            elementsToHide.forEach(function(element) {
-                element.style.display = '';
-            });
+            setTimeout(function () {
+                elementsToHide.forEach(function(element) {
+                    element.style.display = '';
+                });
+            }, 1000);
         }
-        //
-        // function printInvoice() {
-        //     // Tạo một bản sao của trang hoặc phần tử mà bạn muốn in
-        //     var printContents = document.getElementById('invoice').innerHTML;
-        //     var originalContents = document.body.innerHTML;
-        //
-        //     // Thay đổi nội dung trang web trước khi in
-        //     document.body.innerHTML = printContents;
-        //
-        //     // Gọi chức năng in của trình duyệt
-        //     window.print();
-        //
-        //     // Khôi phục lại nội dung ban đầu của trang sau khi in
-        //     document.body.innerHTML = originalContents;
-        // }
-
     </script>
 @endsection
