@@ -180,6 +180,9 @@
                     @endforeach
                     </tbody>
                 </table>
+                    <div class="text-center">
+                        {{ $ordersOfDay->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>

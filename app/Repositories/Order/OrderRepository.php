@@ -21,7 +21,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $today = Carbon::today();
 
         // Truy vấn để lấy tất cả đơn hàng có ngày tạo bằng hôm nay
-        return Order::whereDate('created_at', $today)->get();
+        return Order::whereDate('created_at', $today)->orderBy('updated_at', 'DESC')->paginate(10);
     }
 
     public function getRevenueStatistics($type)
@@ -74,5 +74,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 //        }
 //
 //        return $query->get();
+    }
+
+    public function orderByUpdatedAt() {
+        return Order::query()->orderBy('updated_at', 'DESC')->paginate(10);
     }
 }

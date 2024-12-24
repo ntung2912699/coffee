@@ -37,7 +37,7 @@ class OrderController extends Controller
      */
     public function index() {
         try {
-            $orders = $this->orderRepository->getAll();
+            $orders = $this->orderRepository->orderByUpdatedAt();
             return view('admin.page.order.index', compact('orders'));
         } catch (\Exception $exception) {
             return view('admin.page.error');

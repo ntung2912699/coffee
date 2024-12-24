@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Repositories\Category\CategoryRepository;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class CategoryController extends Controller
      */
     public function index() {
         try {
-            $categories = $this->categoryRepository->getAll();
+            $categories = Category::orderBy('name', 'DESC')->paginate(10);
             return view('admin.page.category.index', compact('categories'));
         } catch (\Exception $exception) {
             return view('admin.page.error');

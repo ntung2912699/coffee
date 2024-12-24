@@ -101,6 +101,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="text-center">
+                {{ $categories->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 

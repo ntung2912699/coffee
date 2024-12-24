@@ -144,6 +144,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="text-left">
+                {{ $products->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 

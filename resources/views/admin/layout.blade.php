@@ -127,6 +127,45 @@
                         100% { transform: rotate(360deg); }
                     }
 
+                    .pagination {
+                        display: inline-flex;
+                        justify-content: center;
+                        gap: 10px; /* Khoảng cách giữa các nút */
+                        padding: 10px 0;
+                    }
+
+                    .pagination li {
+                        list-style: none;
+                    }
+
+                    .pagination .page-item {
+                        border-radius: 5px; /* Bo tròn các nút */
+                        overflow: hidden;
+                        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+                    }
+
+                    .pagination .page-item.active .page-link {
+                        background-color: #e67e22; /* Màu nền cho trang hiện tại */
+                        color: white; /* Màu chữ */
+                        border: none; /* Loại bỏ viền */
+                    }
+
+                    .pagination .page-link {
+                        padding: 10px 15px;
+                        margin: 0 2px; /* Khoảng cách giữa các link */
+                        background-color: #f9f9f9; /* Màu nền cho các nút */
+                        color: #333; /* Màu chữ */
+                        text-decoration: none;
+                        transition: all 0.3s ease-in-out; /* Hiệu ứng hover */
+                        border: 1px solid #ddd; /* Viền nhẹ */
+                    }
+
+                    .pagination .page-link:hover {
+                        background-color: #f4a261; /* Màu nền khi hover */
+                        color: white;
+                        border: none; /* Loại bỏ viền khi hover */
+                    }
+
                 </style>
                 <!-- Thêm phần tử loading bên dưới nút thanh toán -->
                 <div id="loading-overlay"></div>

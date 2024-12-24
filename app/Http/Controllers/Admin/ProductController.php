@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Product\ProductOptionRepository;
 use App\Repositories\Product\ProductRepository;
@@ -51,7 +52,7 @@ class ProductController extends Controller
      */
     public function index() {
         try {
-            $products = $this->productRepository->getAll();
+            $products = Product::orderBy('updated_at', 'DESC')->paginate(10);
             $categories = $this->categoryRepository->getAll();
             $attributes = $this->productOptionRepository->getAll();
             $attribute = $attributes->groupBy('attribute_name');
