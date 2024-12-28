@@ -33,20 +33,17 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         switch ($type) {
             case 'day':
                 $query->addSelect(DB::raw('DATE(order_date) as group_date'))
-                    ->groupBy(DB::raw('DATE(order_date)'))
-                    ->orderBy(DB::raw('DATE(order_date)'), 'desc');
+                    ->groupBy(DB::raw('DATE(order_date)'));
                 break;
 
             case 'week':
-                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date) as year, EXTRACT(WEEK FROM order_date) as week, CONCAT(EXTRACT(YEAR FROM order_date), \'-\', EXTRACT(WEEK FROM order_date)) as group_date'))
-                    ->groupBy(DB::raw('EXTRACT(YEAR FROM order_date), EXTRACT(WEEK FROM order_date)'))
-                    ->orderBy(DB::raw('EXTRACT(YEAR FROM order_date) DESC, EXTRACT(WEEK FROM order_date) DESC'));
+                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date) || \'-\' || EXTRACT(WEEK FROM order_date) as group_date'))
+                    ->groupBy(DB::raw('EXTRACT(YEAR FROM order_date), EXTRACT(WEEK FROM order_date)'));
                 break;
 
             case 'month':
                 $query->addSelect(DB::raw('TO_CHAR(order_date, \'YYYY-MM\') as group_date'))
-                    ->groupBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'))
-                    ->orderBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'), 'desc');
+                    ->groupBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'));
                 break;
         }
 
