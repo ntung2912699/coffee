@@ -77,7 +77,7 @@ class AdminController extends Controller
     }
 
     public function stockStore(Request $request) {
-        try {
+    //    try {
             // Lấy dữ liệu từ form
             $entryDate = $request->input('entry_date');
             $amount = $request->input('amount');
@@ -89,9 +89,9 @@ class AdminController extends Controller
             ]);
 
             return redirect()->route('admin.orders-revenue')->with('success', 'Thông tin nhập hàng đã được lưu');
-        } catch (\Exception $exception) {
-            return view('admin.page.error');
-        }
+       // } catch (\Exception $exception) {
+       //     return view('admin.page.error');
+       // }
     }
 
     public function getProfitOfTheMonth()
