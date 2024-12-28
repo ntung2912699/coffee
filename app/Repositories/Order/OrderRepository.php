@@ -26,7 +26,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function getRevenueStatistics($type)
     {
-        $query = DB::table('orders')
+        $query = DB::table('order')
             ->select(DB::raw('SUM(total_price) as total_revenue, COUNT(id) as total_orders'))
             ->where('status', 'completed'); // Chỉ tính đơn hoàn thành
 
