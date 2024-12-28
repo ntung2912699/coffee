@@ -26,7 +26,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function getRevenueStatistics($type)
     {
-        $query = DB::table('order')
+        $query = DB::table('orders')
             ->select(DB::raw('SUM(total_price) as total_revenue, COUNT(id) as total_orders'))
             ->where('status', 'completed'); // Chỉ tính đơn hoàn thành
 
@@ -38,7 +38,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 break;
 
             case 'week':
-                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date)::TEXT || \'-\' || EXTRACT(WEEK FROM order_date)::TEXT as group_date'))
+                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date) as year, EXTRACT(WEEK FROM order_date) as week, CONCAT(EXTRACT(YEAR FROM order_date), \'-\', EXTRACT(WEEK FROM order_date)) as group_date'))
                     ->groupBy(DB::raw('EXTRACT(YEAR FROM order_date), EXTRACT(WEEK FROM order_date)'))
                     ->orderBy(DB::raw('EXTRACT(YEAR FROM order_date) DESC, EXTRACT(WEEK FROM order_date) DESC'));
                 break;
