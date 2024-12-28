@@ -45,7 +45,7 @@ class AdminController extends Controller
      */
     public function revenue()
     {
-        try {
+//        try {
             // Lấy thống kê doanh thu theo ngày, tuần và tháng
             $revenueByDay = $this->orderRepository->getRevenueStatistics('day');
             $revenueByWeek = $this->orderRepository->getRevenueStatistics('week');
@@ -71,9 +71,9 @@ class AdminController extends Controller
                     'totalStockEntriesAmount'
                 )
             );
-        } catch (\Exception $exception) {
-            return view('admin.page.error');
-        }
+//        } catch (\Exception $exception) {
+//            return view('admin.page.error');
+//        }
     }
 
     public function stockStore(Request $request) {
