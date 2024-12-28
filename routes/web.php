@@ -26,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders/cancel/{id}', [\App\Http\Controllers\HomeController::class, 'cancelOrder'])->name('orders.cancel');
     Route::post('/orders/delete/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'delete'])->name('orders.delete');
     Route::get('/orders/revenue', [\App\Http\Controllers\Admin\AdminController::class, 'revenue'])->name('admin.orders-revenue');
+    Route::post('/stock/store', [\App\Http\Controllers\Admin\AdminController::class, 'stockStore'])->name('stock.store');
+    Route::get('/profit/calculation', [\App\Http\Controllers\Admin\AdminController::class, 'getProfitOfTheMonth'])->name('profit');
+
 });
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('welcome');

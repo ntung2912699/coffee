@@ -17,6 +17,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                        <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-user-edit"></i> Màn Quản Lý</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -35,6 +36,25 @@
                 <a href="{{ route('dashboard') }}"><i class="fas fa-arrow-circle-left" style="color: #34495e !important;"></i></a> DANH ĐƠN HÀNG
             </h5>
         </div>
+        <div class="form-filter mb-3">
+            <form method="GET" action="{{ route('admin.orders-index') }}">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <label for="start_date">Từ ngày:</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}" class="form-control">
+                    </div>
+                    <div class="col-auto">
+                        <label for="end_date">Đến ngày:</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}" class="form-control">
+                    </div>
+                    <div class="col-auto mt-4">
+                        <button type="submit" class="btn btn-primary">Lọc</button>
+                        <a href="{{ route('admin.orders-index') }}" class="btn btn-secondary">Xóa lọc</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -80,7 +100,7 @@
             </table>
         </div>
         <div class="text-center">
-            {{ $orders->links('pagination::bootstrap-5') }}
+            {{ $orders->appends(['start_date' => $startDate, 'end_date' => $endDate])->links('pagination::bootstrap-5') }}
         </div>
     </div>
 

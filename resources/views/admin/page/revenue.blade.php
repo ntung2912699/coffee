@@ -57,6 +57,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                        <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-user-edit"></i> Màn Quản Lý</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -65,7 +66,7 @@
                         </li>
                     </ul>
                 </div>
-        @else
+            @else
             <!-- Nút hiển thị mặc định nếu chưa đăng nhập -->
                 <a href="{{ route('login') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                     <i class="fas fa-sign-in-alt fa-sm text-white-50"></i> Đăng Nhập
@@ -78,6 +79,54 @@
                     Xuất Báo Cáo
                 </button>
             </h5>
+        </div>
+
+        <!-- Form nhập hàng -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <!-- Doanh thu theo ngày -->
+                    <h3 style="color: #e67e22 !important;">Thống Kê Chi Phí Nhập Hàng</h3>
+                    <form method="POST" action="{{ route('stock.store') }}">
+                        @csrf
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="entry_date">Ngày Nhập:</label>
+                                <input type="date" id="entry_date" name="entry_date" class="form-control" required>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="entry_amount">Số Tiền:</label>
+                                <input type="text" id="amount" name="amount" class="form-control" required
+                                       oninput="formatCurrency(this)"
+                                       onblur="addCurrencySymbol(this)"
+                                       onfocus="removeCurrencySymbol(this)">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Nhập Hàng</button>
+                                <a href="{{ route('profit') }}">Xem Báo Cáo Lợi Nhuận</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Ngày Nhập Hàng</th>
+                            <th>Số Tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($stockEntries as $stat)
+                            <tr>
+                                <td>{{ $stat->entry_date }}</td>
+                                <td>{{ number_format($stat->amount, 0) }} VNĐ</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Content Row -->
@@ -164,4 +213,33 @@
             </div>
         </div>
     </div>
+    <script>
+        function formatCurrency(input) {
+            // Lấy giá trị nhập vào
+            let value = input.value.replace(/[^\d]/g, ''); // Xóa tất cả các ký tự không phải là số
+
+            // Chia thành nhóm 3 số và thêm dấu phân cách nghìn
+            if (value) {
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // Cập nhật lại giá trị vào input với dấu phân cách nghìn
+            input.value = value;
+        }
+
+        // Hàm để xử lý khi người dùng rời khỏi trường nhập liệu (blur)
+        function addCurrencySymbol(input) {
+            let value = input.value.replace(/[^\d]/g, ''); // Lọc chỉ số
+            if (value) {
+                input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ'; // Thêm dấu phẩy và VNĐ
+            }
+        }
+
+        // Hàm để xử lý khi người dùng nhấn nút "Xóa" hoặc làm rỗng input
+        function removeCurrencySymbol(input) {
+            let value = input.value.replace(/[^\d]/g, ''); // Lọc chỉ số
+            input.value = value; // Loại bỏ VNĐ khi xóa
+        }
+    </script>
+
 @endsection

@@ -32,21 +32,21 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         switch ($type) {
             case 'day':
-                // Sử dụng CURRENT_DATE thay vì DATE để lấy ngày
                 $query->addSelect(DB::raw('DATE(order_date) as group_date'))
-                    ->groupBy(DB::raw('DATE(order_date)'));
+                    ->groupBy(DB::raw('DATE(order_date)'))
+                    ->orderBy(DB::raw('DATE(order_date)'), 'desc');
                 break;
 
             case 'week':
-                // Lấy năm và tuần của ngày (EXTRACT)
-                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date) || \'-\' || EXTRACT(WEEK FROM order_date) as group_date'))
-                    ->groupBy(DB::raw('EXTRACT(YEAR FROM order_date), EXTRACT(WEEK FROM order_date)'));
+                $query->addSelect(DB::raw('EXTRACT(YEAR FROM order_date)::TEXT || \'-\' || EXTRACT(WEEK FROM order_date)::TEXT as group_date'))
+                    ->groupBy(DB::raw('EXTRACT(YEAR FROM order_date), EXTRACT(WEEK FROM order_date)'))
+                    ->orderBy(DB::raw('EXTRACT(YEAR FROM order_date) DESC, EXTRACT(WEEK FROM order_date) DESC'));
                 break;
 
             case 'month':
-                // Lấy năm và tháng với TO_CHAR
                 $query->addSelect(DB::raw('TO_CHAR(order_date, \'YYYY-MM\') as group_date'))
-                    ->groupBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'));
+                    ->groupBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'))
+                    ->orderBy(DB::raw('TO_CHAR(order_date, \'YYYY-MM\')'), 'desc');
                 break;
         }
 
@@ -59,17 +59,20 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 //        switch ($type) {
 //            case 'day':
 //                $query->addSelect(DB::raw('DATE(order_date) as group_date'))
-//                    ->groupBy(DB::raw('DATE(order_date)'));
+//                    ->groupBy(DB::raw('DATE(order_date)'))
+//                    ->orderBy(DB::raw('DATE(order_date)'), 'desc');
 //                break;
 //
 //            case 'week':
 //                $query->addSelect(DB::raw('YEARWEEK(order_date) as group_date'))
-//                    ->groupBy(DB::raw('YEARWEEK(order_date)'));
+//                    ->groupBy(DB::raw('YEARWEEK(order_date)'))
+//                    ->orderBy(DB::raw('YEARWEEK(order_date)'), 'desc');
 //                break;
 //
 //            case 'month':
 //                $query->addSelect(DB::raw('DATE_FORMAT(order_date, "%Y-%m") as group_date'))
-//                    ->groupBy(DB::raw('DATE_FORMAT(order_date, "%Y-%m")'));
+//                    ->groupBy(DB::raw('DATE_FORMAT(order_date, "%Y-%m")'))
+//                    ->orderBy(DB::raw('DATE_FORMAT(order_date, "%Y-%m")'), 'desc');
 //                break;
 //        }
 //
@@ -78,5 +81,24 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function orderByUpdatedAt() {
         return Order::query()->orderBy('updated_at', 'DESC')->paginate(10);
+    }
+
+    /**
+     * @param $startDate
+     * @param $endDate
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getOrdersByDate($startDate, $endDate)
+    {
+        $query = Order::query();
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('order_date', [
+                Carbon::parse($startDate)->startOfDay()->toDateTimeString(),
+                Carbon::parse($endDate)->endOfDay()->toDateTimeString(),
+            ]);
+        }
+
+        return $query->orderBy('order_date', 'DESC')->paginate(10);
     }
 }

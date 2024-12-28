@@ -35,14 +35,22 @@ class OrderController extends Controller
     /**
      * @return \Illuminate\Container\Container|mixed|object
      */
-    public function index() {
+    public function index(Request $request)
+    {
         try {
-            $orders = $this->orderRepository->orderByUpdatedAt();
-            return view('admin.page.order.index', compact('orders'));
+            // Lấy dữ liệu lọc từ request
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            // Gọi hàm từ Repository
+            $orders = $this->orderRepository->getOrdersByDate($startDate, $endDate);
+
+            return view('admin.page.order.index', compact('orders', 'startDate', 'endDate'));
         } catch (\Exception $exception) {
             return view('admin.page.error');
         }
     }
+
 
     /**
      * Thêm mới category

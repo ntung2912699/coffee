@@ -17,6 +17,7 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('welcome') }}"><i class="fas fa-cart-plus"></i> Màn Hình Order</a></li>
+                            <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="fas fa-user-edit"></i> Màn Quản Lý</a></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
