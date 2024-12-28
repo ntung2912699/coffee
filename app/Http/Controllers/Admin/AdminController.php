@@ -82,6 +82,12 @@ class AdminController extends Controller
             $entryDate = $request->input('entry_date');
             $amount = $request->input('amount');
 
+             // Xử lý amount: Loại bỏ các ký tự không phải số và dấu phân cách
+            $amount = preg_replace('/[^0-9]/', '', $amount);
+        
+            // Chuyển đổi thành số (float hoặc integer)
+            $amount = (float)$amount;
+
             // Lưu thông tin nhập hàng vào cơ sở dữ liệu
             StockEntry::create([
                 'entry_date' => Carbon::parse($entryDate),
