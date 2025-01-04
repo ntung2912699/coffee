@@ -108,7 +108,7 @@ class HomeController extends Controller
             ]);
         }
 
-//        Mail::to('coffeegio071088@gmail.com')->send(new OrderCreated($order));
+        Mail::to('coffeegio071088@gmail.com')->send(new OrderCreated($order));
         $isAuthenticated = auth()->check();
 
         return response()->json([

@@ -781,13 +781,6 @@
                             // Kiểm tra và gọi updateCart() chỉ khi có sản phẩm trong giỏ hàng
                             updateCart(cartId, true);
 
-                            // Chuyển đến trang in hóa đơn hoặc thông báo đơn hàng thành công
-                            if (response.is_authenticated === true) {
-                                window.location.href = `/orders/printReceipt/${response.order_id}`;
-                            } else {
-                                window.location.href = `/orders/printReceipt/${response.order_id}`;
-                            }
-
                             if (response.is_authenticated === true) {
                                 window.location.href = `/orders/print/${response.order_id}`;
                             } else {
