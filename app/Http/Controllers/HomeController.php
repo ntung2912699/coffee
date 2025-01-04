@@ -13,6 +13,8 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Illuminate\Http\Request;
@@ -102,11 +104,11 @@ class HomeController extends Controller
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
                 'total_price' => $totalItemPrice, // Lưu tổng tiền
-                'attributes' => $item['options'], // thuộc tính
+                'attributes' => !empty($item['options'])?$item['options']:"", // thuộc tính
             ]);
         }
 
-        Mail::to('coffeegio071088@gmail.com')->send(new OrderCreated($order));
+//        Mail::to('coffeegio071088@gmail.com')->send(new OrderCreated($order));
         $isAuthenticated = auth()->check();
 
         return response()->json([
@@ -123,27 +125,9 @@ class HomeController extends Controller
     {
         $order = Order::with('items.product')->findOrFail($id);
 
-//        // Thông tin thanh toán
-//        $bankName = 'MB BANK';
-//        $accountNumber = '001099022228';
-//
-//        // Dữ liệu cho mã QR (theo chuẩn yêu cầu)
-//        $qrData = "BANK:$bankName;STK:$accountNumber;AMOUNT:$order->total_price;NOTE:COFFEE GIO Thanh Toan Don Hang $order->id";
-//
-//        // Tạo đối tượng QrCode
-//        $qrCode = new QrCode($qrData);
-//
-//        // Tạo đối tượng Writer
-//        $writer = new PngWriter();
-//
-//        // Lưu mã QR vào file
-//        $qrCodePath = public_path('qr_codes/qr_' . $order->id . '.png');
-//        $writer->write($qrCode)->saveToFile($qrCodePath);
-
         // Trả về view
         return view('order.print-order', [
             'order' => $order,
-//            'qrCodePath' => 'qr_codes/qr_' . $order->id . '.png',
         ]);
     }
 
@@ -164,61 +148,65 @@ class HomeController extends Controller
 
     /**
      * @param $orderId
+     * @return mixed
+     * @throws \Exception
      */
     public function printReceipt($orderId)
     {
-        try {
-            $order = Order::with('items.product')->findOrFail($orderId);
+        $order = Order::with('items.product')->findOrFail($orderId);
 
-            // Kết nối đến máy in POS-80
-            $connector = new NetworkPrintConnector("192.168.1.220", 9100);
+        // Kết nối đến máy in POS-80
+        $connector = new WindowsPrintConnector('POS-80');
+        $qrCodePath = public_path('qr_codes/qrcode.png');
 
-            // Tạo đối tượng máy in
-            $printer = new Printer($connector);
+        // Tạo đối tượng máy in
+        $printer = new Printer($connector);
 
-            // In thông tin cửa hàng
-            $printer->text("COFFEE GIÓ\n");
-            $printer->text("Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội");
-            $printer->text("Điện thoại: 0968 251 663");
+        // In thông tin cửa hàng
+        $printer->text("COFFEE GIÓ\n");
+        $printer->text("Địa chỉ: Số 3 - đường Đầm Vực Giang - xã Hạ Bằng - huyện Thạch Thất - tp Hà Nội\n");
+        $printer->text("Điện thoại: 0968 251 663\n");
 
-            // In thông tin đơn hàng
-            $printer->text("HÓA ĐƠN BÁN LẺ\n");
-            $printer->text("Mã đơn hàng: #{$order->id}\n");
-            $printer->text("Ngày: {$order->created_at->format('d/m/Y H:i:s')}\n");
-            $printer->text("Tên khách hàng: {$order->customer_name}\n");
-            $printer->text("Số điện thoại: {$order->phone_number}\n");
-            $printer->text("Địa chỉ: {$order->address}\n");
+        // In thông tin đơn hàng
+        $printer->text("HÓA ĐƠN BÁN LẺ\n");
+        $printer->text("Mã đơn hàng: #{$order->id}\n");
+        $printer->text("Ngày: {$order->created_at->format('d/m/Y H:i:s')}\n");
+        $printer->text("Tên khách hàng: {$order->customer_name}\n");
+        $printer->text("Số điện thoại: {$order->phone_number}\n");
+        $printer->text("Địa chỉ: {$order->address}\n");
 
-
-            // In các sản phẩm trong đơn hàng
-            foreach ($order->items as $item) {
-                $printer->text("{{ $item->product->name }} {{ $item->attributes }} x {$item->quantity} - {$item->price} VNĐ\n");
-            }
-
-            // Tổng tiền
-            $printer->text("Tổng tiền: {$order->total_price} VNĐ\n");
-
-            // Cảm ơn
-            $printer->text("Cảm ơn quý khách!\n");
-
-            // Cắt giấy
-            $printer->cut();
-
-            // Đóng kết nối máy in
-            $printer->close();
-
-            $this->orderRepository->update($orderId, [
-                'status' => 'completed'
-            ]);
-
-            // Quay về trang welcome với thông báo thành công
-            return redirect()->route('welcome')->with('success', "Đơn Hàng {$orderId} Đã Hoàn Tất!");
-
-        } catch (\Exception $e) {
-            // Nếu không kết nối được máy in, quay lại trang 'orders.print' và thông báo lỗi
-            return redirect()->route('orders.print', ['id' => $orderId])
-                ->with('error', 'Không thể kết nối với máy in. Vui lòng kiểm tra lại.');
+        // In các sản phẩm trong đơn hàng
+        foreach ($order->items as $item) {
+            $printer->text("{$item->product->name} x {$item->quantity} - {$item->price} VNĐ\n");
         }
+
+        // Tổng tiền
+        $printer->text("Tổng tiền: {$order->total_price} VNĐ\n");
+
+        // Chèn mã QR vào biên lai
+        if (file_exists($qrCodePath)) {
+            $qrCode = EscposImage::load($qrCodePath);
+            $printer->bitImage($qrCode);
+        } else {
+            $printer->text("QR Code không có sẵn!\n"); // Thông báo nếu không tìm thấy ảnh
+        }
+
+        // Cảm ơn
+        $printer->text("\nCảm ơn quý khách!\n");
+
+        // Cắt giấy
+        $printer->cut();
+
+        // Đóng kết nối máy in
+        $printer->close();
+
+        $this->orderRepository->update($orderId, [
+            'status' => 'completed'
+        ]);
+
+        return response()->json([
+            'order_id' => $order->id,
+        ]);
     }
 
     /**

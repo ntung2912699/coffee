@@ -172,11 +172,11 @@
             <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
                 @csrf
                 <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
-                @if ($order->status == 'pending')
-                    <button type="submit" class="btn btn-outline-danger">HỦY ĐƠN</button>
-                @else
-                    <button type="submit" class="btn btn-outline-danger" style="display:none;">HỦY ĐƠN</button>
-                @endif
+{{--                @if ($order->status == 'pending')--}}
+{{--                    <button type="submit" class="btn btn-outline-danger">HỦY ĐƠN</button>--}}
+{{--                @else--}}
+{{--                    <button type="submit" class="btn btn-outline-danger" style="display:none;">HỦY ĐƠN</button>--}}
+{{--                @endif--}}
             </form>
         </div>
     </div>
