@@ -84,7 +84,7 @@ class AdminController extends Controller
 
              // Xử lý amount: Loại bỏ các ký tự không phải số và dấu phân cách
             $amount = preg_replace('/[^0-9]/', '', $amount);
-        
+
             // Chuyển đổi thành số (float hoặc integer)
             $amount = (float)$amount;
 
@@ -103,16 +103,15 @@ class AdminController extends Controller
     public function getProfitOfTheMonth()
     {
         try {
-            // Lấy tháng và năm hiện tại
-            $currentMonth = Carbon::now()->format('Y-m'); // Format YYYY-MM
+            $selectedMonth = request('month', Carbon::now()->format('Y-m')); // Nếu không có 'month' trong request, mặc định là tháng hiện tại
 
             // Tính tổng doanh thu của tháng này từ bảng Order
             $totalRevenue = Order::where('status', 'completed') // Lọc theo trạng thái đơn hàng
-            ->where('order_date', 'like', "{$currentMonth}%") // Lọc theo tháng
+            ->where('order_date', 'like', "{$selectedMonth}%") // Lọc theo tháng
             ->sum('total_price'); // Tổng doanh thu
 
             // Tính tổng chi phí hàng nhập của tháng này từ bảng StockEntry
-            $totalExpenses = StockEntry::where('created_at', 'like', "{$currentMonth}%") // Lọc theo tháng
+            $totalExpenses = StockEntry::where('created_at', 'like', "{$selectedMonth}%") // Lọc theo tháng
             ->sum('amount'); // Tổng chi phí nhập hàng
 
             // Tính lợi nhuận (Doanh thu - Chi phí)

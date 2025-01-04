@@ -82,15 +82,28 @@
         </div>
 
         <div class="dashboard">
+            <!-- Thêm ô lọc theo tháng -->
+            <form method="GET" action="{{ route('profit') }}">
+                <div class="d-flex align-items-center">
+                    <div class="form-group me-4">
+                        <!-- Nếu có request('month') thì dùng giá trị đó, không thì dùng tháng hiện tại -->
+                        <input type="month" name="month" class="form-control" value="{{ request('month') ?? \Carbon\Carbon::now()->format('Y-m') }}" />
+                    </div>
+                    <button class="btn btn-outline-primary text-primary">
+                        Lọc Báo Cáo
+                    </button>
+                </div>
+            </form>
+
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h5 class="h5 mb-0 text-gray-800">Lợi Nhuận Tháng {{ Carbon\Carbon::now()->format('m-Y') }}</h5>
+                <h5 class="h5 mb-0 text-gray-800">Lợi Nhuận Tháng {{ request('month') ?? \Carbon\Carbon::now()->format('Y-m') }}</h5>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Tổng Doanh Thu Tháng {{ Carbon\Carbon::now()->format('m-Y') }}</h4>
+                            <h4>Tổng Doanh Thu Tháng {{ request('month') ?? \Carbon\Carbon::now()->format('Y-m') }}</h4>
                         </div>
                         <div class="card-body">
                             <h3>{{ number_format($totalRevenue, 0) }} VND</h3>
@@ -101,7 +114,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Tổng Chi Phí Nhập Hàng Tháng {{ Carbon\Carbon::now()->format('m-Y') }}</h4>
+                            <h4>Tổng Chi Phí Nhập Hàng Tháng {{ request('month') ?? \Carbon\Carbon::now()->format('Y-m') }}</h4>
                         </div>
                         <div class="card-body">
                             <h3>{{ number_format($totalExpenses, 0) }} VND</h3>
@@ -112,7 +125,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Lợi Nhuận Tháng {{ Carbon\Carbon::now()->format('m-Y') }}</h4>
+                            <h4>Lợi Nhuận Tháng {{ request('month') ?? \Carbon\Carbon::now()->format('Y-m') }}</h4>
                         </div>
                         <div class="card-body">
                             <h3>{{ number_format($profit, 0) }} VND</h3>
