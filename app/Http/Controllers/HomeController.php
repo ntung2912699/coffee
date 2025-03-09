@@ -11,6 +11,7 @@ use App\Repositories\Order\OrderRepository;
 use App\Repositories\Product\ProductRepository;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Mike42\Escpos\EscposImage;
@@ -124,10 +125,16 @@ class HomeController extends Controller
     public function printOrder($id)
     {
         $order = Order::with('items.product')->findOrFail($id);
-
+        // Thông tin thanh toán
+        $bankId = "970422"; // Mã ngân hàng MB
+        $accountNumber = "001099022228"; // Số tài khoản nhận tiền
+        $amount = $order->total_price; // Số tiền VND
+        $description = "Thanh toan don hang COFFE GIO" . $order->id; // Nội dung chuyển khoản
+        $qrCode = $this->generateVietQR($bankId, $accountNumber, $amount, $description);
         // Trả về view
         return view('order.print-order', [
             'order' => $order,
+            'qrCode' => $qrCode,
         ]);
     }
 
@@ -318,4 +325,21 @@ class HomeController extends Controller
         return response()->json($options);
     }
 
+    protected function generateVietQR($bankId, $accountNumber, $amount, $description) {
+        $client = new Client();
+        $response = $client->post('https://api.vietqr.io/v2/generate', [
+            'json' => [
+                'accountNo' => $accountNumber,
+                'accountName' => 'NGUYEN VAN TUNG', // Thay tên tài khoản thật của bạn
+                'acqId' => $bankId, // Mã ngân hàng MB
+                'amount' => number_format($amount, 0, '.', ''),
+                'addInfo' => $description,
+                'format' => 'text',
+                'template' => 'compact',
+            ]
+        ]);
+
+        $body = json_decode($response->getBody(), true);
+        return $body['data']['qrDataURL'];
+    }
 }

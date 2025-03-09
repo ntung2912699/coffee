@@ -14,10 +14,37 @@
     </style>
     <style>
         @media print {
-            /*@page {*/
-            /*    size: 80mm auto; !* Khổ giấy 80mm, chiều cao tự động *!*/
-            /*    margin: 0; !* Xóa margin mặc định của trình duyệt *!*/
-            /*}*/
+            @page {
+                size: 80mm auto; /* In trên giấy cuộn 80mm */
+            }
+
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+                font-size: 12px; /* Kích thước chữ phù hợp */
+                line-height: 1.5; /* Khoảng cách dòng vừa phải */
+            }
+
+            .invoice {
+                width: 100%;
+                max-width: 80mm; /* Đảm bảo không vượt quá khổ giấy */
+                page-break-before: avoid;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+
+            /* Đảm bảo mỗi sản phẩm trong hóa đơn không bị tách trang */
+            .invoice-item {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                display: block;
+            }
+
+            /* Ẩn header, footer không cần thiết khi in */
+            header, footer, .no-print {
+                display: none;
+            }
 
             body {
                 margin: 0;
@@ -30,11 +57,11 @@
                 margin-bottom: 0 !important;
             }
 
-            /*#invoice {*/
-            /*    width: 80mm;*/
-            /*    overflow: visible;*/
-            /*    page-break-inside: avoid; !* Tránh ngắt trang bên trong *!*/
-            /*}*/
+            .invoice {
+                width: 100%;
+                page-break-inside: avoid;
+            }
+
             .invoice-total p {
                 font-size: 33px;
             }
@@ -105,7 +132,7 @@
         </h5>
     </div>
 
-    <div class="container" style="max-width: 700px" id="invoice">
+    <div class="container invoice" style="max-width: 700px" id="invoice">
         <div class="invoice-header text-center">
             <h1 class="font-weight-bold" style="font-size: 28px;">COFFEE GIÓ</h1>
             <p style="font-size: 16px;">Đ/C: Số 3 - đường Đầm Vực Giang - Hạ Bằng - Thạch Thất - Hà Nội</p>
@@ -114,7 +141,7 @@
         </div>
 
         <div class="row">
-            <div class="invoice-info col-8">
+            <div class="invoice-info col-6">
                 <p><span>Mã đơn hàng:</span> {{ $order->id }}</p>
                 <p id="status-order"><span>Trạng thái:</span> <span id="status-order-prt">{{ $order->status }}</span></p>
                 <p><span>Ngày:</span> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
@@ -133,11 +160,6 @@
                 @else
                     <p><span>Địa chỉ:</span> {{ $order->address }}</p>
                 @endif
-            </div>
-
-            <div class="invoice-paypal text-center col-4">
-                <img style="width: 100%" src="{{ asset('qr_codes/qrcode.jpg') }}" alt="Mã QR thanh toán"/>
-                <p>Quét mã QR để thanh toán</p>
             </div>
         </div>
 
@@ -165,6 +187,10 @@
 
         <div class="invoice-total">
             <h4 class="text-left"><span>Tổng tiền: {{ number_format($order->total_price) }} VNĐ</span></h4>
+            <div class="invoice-paypal text-center col-12 text-center">
+                <img style="width: 80%" src="{{ $qrCode }}" alt="QR Code Thanh Toán">
+                <p>Quét mã QR để thanh toán</p>
+            </div>
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
         </div>
 
