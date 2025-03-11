@@ -20,6 +20,7 @@
 
             body {
                 width: 80mm;
+                height: auto;
                 margin: 0;
                 padding: 0;
                 font-size: 12px; /* Kích thước chữ phù hợp */
@@ -49,7 +50,7 @@
             body {
                 margin: 0;
                 font-family: Arial, sans-serif;
-                font-size: 33px;
+                font-size: 40px;
                 color: black;
             }
 
@@ -63,24 +64,32 @@
             }
 
             .invoice-total p {
-                font-size: 33px;
+                font-size: 40px;
             }
 
             .invoice-total h4 span {
-                font-size: 35px;
+                font-size: 40px;
             }
 
             .invoice-header p {
-                font-size: 33px !important;
+                font-size: 40px !important;
+            }
+
+            .invoice-header h1 {
+                font-size: 45px !important;
+            }
+
+            .invoice-header h3 {
+                font-size: 40px !important;
             }
 
             .invoice-info p,
             .invoice-info span {
-                font-size: 33px !important;
+                font-size: 40px !important;
             }
 
             .title-order {
-                font-size: 33px !important;
+                font-size: 40px !important;
             }
 
             .table {
@@ -89,9 +98,9 @@
             }
 
             .table th, .table td {
-                font-size: 33px !important;
+                font-size: 40px !important;
                 border: 0;
-                color: #858796 !important;
+                color: #000000 !important;
                 padding: 4px;
                 text-align: left;
             }
@@ -132,7 +141,19 @@
         </h5>
     </div>
 
-    <div class="container invoice" style="max-width: 700px" id="invoice">
+    <div class="print-button text-center mt-3" style="margin-bottom: 15px">
+        <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
+            @csrf
+            <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
+            {{--                @if ($order->status == 'pending')--}}
+            {{--                    <button type="submit" class="btn btn-outline-danger">HỦY ĐƠN</button>--}}
+            {{--                @else--}}
+            {{--                    <button type="submit" class="btn btn-outline-danger" style="display:none;">HỦY ĐƠN</button>--}}
+            {{--                @endif--}}
+        </form>
+    </div>
+
+    <div class="container invoice" style="max-width: 700px; margin-bottom: 40px; background-color: #ffffff; padding: 20px" id="invoice">
         <div class="invoice-header text-center">
             <h1 class="font-weight-bold" style="font-size: 28px;">COFFEE GIÓ</h1>
             <p style="font-size: 16px;">Đ/C: Số 3 - đường Đầm Vực Giang - Hạ Bằng - Thạch Thất - Hà Nội</p>
@@ -141,25 +162,25 @@
         </div>
 
         <div class="row">
-            <div class="invoice-info col-6">
+            <div class="invoice-info col-12">
                 <p><span>Mã đơn hàng:</span> {{ $order->id }}</p>
                 <p id="status-order"><span>Trạng thái:</span> <span id="status-order-prt">{{ $order->status }}</span></p>
                 <p><span>Ngày:</span> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
-                @if($order->customer_name === 'new customer')
-                    <p class="none-content-print"><span>Tên khách:</span> {{ $order->customer_name }}</p>
-                @else
-                    <p><span>Tên khách:</span> {{ $order->customer_name }}</p>
-                @endif
-                @if($order->phone_number === 'N/A')
-                    <p class="none-content-print"><span>Số điện thoại:</span> {{ $order->phone_number }}</p>
-                @else
-                    <p><span>Số điện thoại:</span> {{ $order->phone_number }}</p>
-                @endif
-                @if($order->address === 'N/A')
-                    <p class="none-content-print"><span>Địa chỉ:</span> {{ $order->address }}</p>
-                @else
-                    <p><span>Địa chỉ:</span> {{ $order->address }}</p>
-                @endif
+{{--                @if($order->customer_name === 'new customer')--}}
+{{--                    <p class="none-content-print"><span>Tên khách:</span> {{ $order->customer_name }}</p>--}}
+{{--                @else--}}
+{{--                    <p><span>Tên khách:</span> {{ $order->customer_name }}</p>--}}
+{{--                @endif--}}
+{{--                @if($order->phone_number === 'N/A')--}}
+{{--                    <p class="none-content-print"><span>Số điện thoại:</span> {{ $order->phone_number }}</p>--}}
+{{--                @else--}}
+{{--                    <p><span>Số điện thoại:</span> {{ $order->phone_number }}</p>--}}
+{{--                @endif--}}
+{{--                @if($order->address === 'N/A')--}}
+{{--                    <p class="none-content-print"><span>Địa chỉ:</span> {{ $order->address }}</p>--}}
+{{--                @else--}}
+{{--                    <p><span>Địa chỉ:</span> {{ $order->address }}</p>--}}
+{{--                @endif--}}
             </div>
         </div>
 
@@ -192,18 +213,6 @@
                 <p>Quét mã QR để thanh toán</p>
             </div>
             <p class="text-center">Xin cảm ơn quý khách! Hẹn gặp lại!</p>
-        </div>
-
-        <div class="print-button text-center mt-3">
-            <form method="POST" action="{{ route('orders.cancel', ['id' => $order->id]) }}">
-                @csrf
-                <a onclick="printReceipt()" class="btn btn-primary"><i class="fas fa-print"></i> In Hóa Đơn</a>
-{{--                @if ($order->status == 'pending')--}}
-{{--                    <button type="submit" class="btn btn-outline-danger">HỦY ĐƠN</button>--}}
-{{--                @else--}}
-{{--                    <button type="submit" class="btn btn-outline-danger" style="display:none;">HỦY ĐƠN</button>--}}
-{{--                @endif--}}
-            </form>
         </div>
     </div>
 
