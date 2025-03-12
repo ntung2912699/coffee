@@ -18,78 +18,65 @@
                 size: 80mm auto; /* In trên giấy cuộn 80mm */
             }
 
+            @page :nth(2) {
+                margin-top: 0; /* Kéo sát trang từ page 2 trở đi */
+            }
+
+            /*!* Ẩn header của bảng từ trang thứ 2 trở đi *!*/
+            /*.invoice:nth-of-type(n+2) .table thead {*/
+            /*    display: none !important;*/
+            /*}*/
+
             body {
-                width: 80mm;
+                /*width: 80mm;*/
                 height: auto;
                 margin: 0;
                 padding: 0;
-                font-size: 12px; /* Kích thước chữ phù hợp */
-                line-height: 1.5; /* Khoảng cách dòng vừa phải */
+                font-size: 12px;
+                line-height: 1.5;
+                width: 100%;
             }
 
             .invoice {
                 width: 100%;
-                max-width: 80mm; /* Đảm bảo không vượt quá khổ giấy */
+                max-width: 80mm;
                 page-break-before: avoid;
                 page-break-after: avoid;
                 page-break-inside: avoid;
             }
 
-            /* Đảm bảo mỗi sản phẩm trong hóa đơn không bị tách trang */
             .invoice-item {
                 page-break-inside: avoid;
                 break-inside: avoid;
                 display: block;
             }
 
-            /* Ẩn header, footer không cần thiết khi in */
-            header, footer, .no-print {
-                display: none;
-            }
-
-            body {
-                margin: 0;
-                font-family: Arial, sans-serif;
-                font-size: 40px;
-                color: black;
+            /* Ẩn các phần không cần in */
+            header, footer, .no-print, .print-button, .dropdown,
+            .d-sm-flex.align-items-center.justify-content-between.mb-4,
+            .none-content-print, #status-order {
+                display: none !important;
             }
 
             p {
                 margin-bottom: 0 !important;
             }
 
-            .invoice {
-                width: 100%;
-                page-break-inside: avoid;
-            }
-
-            .invoice-total p {
-                font-size: 40px;
+            /* Font size cho hóa đơn */
+            .invoice-total p,
+            .invoice-header p,
+            .invoice-header h1,
+            .invoice-header h3,
+            .invoice-info p,
+            .invoice-info span,
+            .title-order,
+            .table th,
+            .table td {
+                font-size: 40px !important;
             }
 
             .invoice-total h4 span {
-                font-size: 40px;
-            }
-
-            .invoice-header p {
-                font-size: 40px !important;
-            }
-
-            .invoice-header h1 {
-                font-size: 45px !important;
-            }
-
-            .invoice-header h3 {
-                font-size: 40px !important;
-            }
-
-            .invoice-info p,
-            .invoice-info span {
-                font-size: 40px !important;
-            }
-
-            .title-order {
-                font-size: 40px !important;
+                font-size: 50px !important;
             }
 
             .table {
@@ -98,19 +85,10 @@
             }
 
             .table th, .table td {
-                font-size: 40px !important;
                 border: 0;
                 color: #000000 !important;
                 padding: 4px;
                 text-align: left;
-            }
-
-            .print-button, .dropdown, .d-sm-flex.align-items-center.justify-content-between.mb-4 , .none-content-print{
-                display: none !important; /* Ẩn các phần không cần in */
-            }
-
-            #status-order {
-                display: none !important;
             }
         }
     </style>
@@ -154,15 +132,22 @@
     </div>
 
     <div class="container invoice" style="max-width: 700px; margin-bottom: 40px; background-color: #ffffff; padding: 20px" id="invoice">
-        <div class="invoice-header text-center">
-            <h1 class="font-weight-bold" style="font-size: 28px;">COFFEE GIÓ</h1>
-            <p style="font-size: 16px;">Đ/C: Số 3 - đường Đầm Vực Giang - Hạ Bằng - Thạch Thất - Hà Nội</p>
-            <p style="font-size: 16px;">Điện thoại: 0968 251 663</p>
-            <h3 class="mt-3" style="font-size: 25px;">HÓA ĐƠN BÁN LẺ</h3>
-        </div>
+{{--        <div class="row">--}}
+            <div class="invoice-header text-center">
+                <h1 class="font-weight-bold" style="font-size: 28px;">COFFEE GIÓ</h1>
+                <p style="font-size: 16px;">Đ/C: Số 3 - đường Đầm Vực Giang - Hạ Bằng - Thạch Thất - Hà Nội</p>
+                <p style="font-size: 16px;">Điện thoại: 0968 251 663</p>
+                <h3 class="mt-3" style="font-size: 25px;">HÓA ĐƠN BÁN LẺ</h3>
+            </div>
+
+{{--            <div class="invoice-paypal text-center col-6 text-center">--}}
+{{--                <img style="width: 100%" src="{{ $qrCode }}" alt="QR Code Thanh Toán">--}}
+{{--                <p>Quét mã QR để thanh toán</p>--}}
+{{--            </div>--}}
+{{--        </div>--}}
 
         <div class="row">
-            <div class="invoice-info col-12">
+            <div class="invoice-info col-5">
                 <p><span>Mã đơn hàng:</span> {{ $order->id }}</p>
                 <p id="status-order"><span>Trạng thái:</span> <span id="status-order-prt">{{ $order->status }}</span></p>
                 <p><span>Ngày:</span> {{ $order->created_at->format('d/m/Y H:i:s') }}</p>
